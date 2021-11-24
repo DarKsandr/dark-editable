@@ -1,0 +1,11 @@
+.dark-editable-element{
+    border-bottom: dashed 1px #0088cc;
+    cursor: pointer;
+}
+.dark-editable-element-disabled{
+    border-bottom: none;
+    cursor: default;
+}
+.dark-editable{
+    max-width: none;
+}
