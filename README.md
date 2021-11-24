@@ -1,4 +1,5 @@
 # Getting started
+It is an alternative to x-editable. Written in pure JavaScript.
 ## Quick start
 Required
 - Bootstrap 5
