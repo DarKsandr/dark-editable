@@ -88,12 +88,65 @@ Required
     ```
 # Options
 Options can be defined via javascript $().editable({...}) or via data-* html attributes.\
-| Name        | Type     | Default | Description                                                                      |
-| ----------- | -------- | ------- | -------------------------------------------------------------------------------- |
-| ajaxOptions | object   | null    | Text shown when element is empty                                                 |
-| disabled    | boolean  | false   | Sets disabled state of editable                                                  |
-| emptytext   | string   | 'Empty' | Text shown when element is empty.                                                |
-| error       | function | null    |                                                                                  |
-| name        | string   | null    | Name of field. Will be submitted on server. Can be taken from ```id``` attribute |
-| pk          | string   | object  | function                                                                         | null    | Primary key of editable object (e.g. record id in database). For composite keys use object, e.g. {id: 1, lang: 'en'}. Can be calculated dynamically via function.
+| Name        | Type            | Default        | Description                                                                                                                                              |
+| ----------- | --------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ajaxOptions | object          | null           | Text shown when element is empty                                                                                                                         |
+| disabled    | boolean         | false          | Sets disabled state of editable                                                                                                                          |
+| emptytext   | string          | 'Empty'        | Text shown when element is empty.                                                                                                                        |
+| error       | function        | null           |                                                                                                                                                          |
+| success     | function        | null           |                                                                                                                                                          |
+| name        | string          | null           | Name of field. Will be submitted on server. Can be taken from ```id``` attribute                                                                         |
+| pk          | object/function | null           | Primary key of editable object (e.g. record id in database).                                                                                             |
+| send        | boolean         | true           | Strategy for sending data on server. When ```true``` data will be sent on server only if pk and url defined, otherwise new value will be stored locally. |
+| type        | string          | 'text'         | Type of input. Can be text/textarea/select/date and more                                                                                                 |
+| url         | string/function | null           | Url for submit, e.g. ```'/post'```                                                                                                                       |
+| value       | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
+# Inputs
+There are several input types supported by library. Each type may have additional configuration options.\
+Currently supported:
+- text
+- textarea
+- select
+- date
+- datetime
+- html5types
+## text
+Text input
+| Name        | Type   | Default | Description                                                |
+| ----------- | ------ | ------- | ---------------------------------------------------------- |
+| placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
+## textarea
+Textarea input
+| Name        | Type   | Default | Description                                                |
+| ----------- | ------ | ------- | ---------------------------------------------------------- |
+| placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
+## select
+Select (dropdown)
+| Name   | Type  | Default | Description                                                                                                          |
+| ------ | ----- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| source | array | []      | Source data for list. If array - it should be in format: [{value: 1, text: "text1"}, {value: 2, text: "text2"}, ...] |
+## date
+Textarea input
+| Name       | Type   | Default    | Description                                                                                                         |
+| ---------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| format     | string | YYYY-MM-DD | Format used for sending value to server. Also applied when converting date from data-value attribute. Use moment.js |
+| viewformat | string | YYYY-MM-DD | Format used for displaying date. Also applied when converting date from element's text on init. Use moment.js       |
+## datetime
+Textarea input
+| Name       | Type   | Default    | Description                                                                                                         |
+| ---------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| format     | string | YYYY-MM-DD | Format used for sending value to server. Also applied when converting date from data-value attribute. Use moment.js |
+| viewformat | string | YYYY-MM-DD | Format used for displaying date. Also applied when converting date from element's text on init. Use moment.js       |
+## html5types
+HTML5 input types. Following types are supported:
+- password
+- email
+- url
+- tel
+- number
+- range
+- time
 
+| Name        | Type   | Default | Description                                                |
+| ----------- | ------ | ------- | ---------------------------------------------------------- |
+| placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
