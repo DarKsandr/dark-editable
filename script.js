@@ -13,9 +13,6 @@ const text = document.getElementById("text");
 const popover = new DarkEditable(text, {
     type: "text",
     value: "123",
-    url: "/post",
+    url: "https://reqres.in/api/posts",
     pk: 1,
-    ajaxOptions: {
-        method: "GET"
-    }
 });

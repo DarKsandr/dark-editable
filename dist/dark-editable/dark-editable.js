@@ -1,5 +1,6 @@
 class DarkEditable{
     constructor(element, options = {}){
+        this._element = { form: null, load: null, buttons: {success: null, cancel: null}}
         this.element = element;
         this.options = options;
         
@@ -43,6 +44,7 @@ class DarkEditable{
         get_opt("ajaxOptions", {});
         this.ajaxOptions = Object.assign({
             method: "POST",
+            dataType: "json",
         }, this.ajaxOptions);
         get_opt_bool("send", true);
         get_opt_bool("disabled", false);
@@ -103,10 +105,9 @@ class DarkEditable{
     }
 
     init_popover(){
-        const content = this.route_type();
         this.popover = new bootstrap.Popover(this.element, {
             container: "body",
-            content,
+            content: this.route_type(),
             html: true,
             customClass: "dark-editable",
             title: this.title,
@@ -188,6 +189,9 @@ class DarkEditable{
             const opt = document.createElement(`option`);
             opt.value = item.value;
             opt.innerHTML = item.text;
+            if(item.value == this.value){
+                opt.selected = true;
+            }
             select.append(opt);
         });
         
@@ -213,19 +217,37 @@ class DarkEditable{
     /* TYPES END */
 
     /* ADD FOCUS */
+
     add_focus(element){
         this.element.addEventListener('shown.bs.popover', function(){
             element.focus();
         });
     }
+
     /* ADD FOCUS END */
+
+    /* DIV LOAD */
+
+    //true/false
+    load(action){
+        if(action){
+            this._element.load.style.display = "block";
+        } else {
+            this._element.load.style.display = "none";
+        }
+    }
+
+    /* DIV LOAD END */
 
     /* CONTAINER DIV */
 
     createContainer(element){
-        const form = this.createContainerForm(element);
-        form.append(element, this.createButtonSuccess(), this.createButtonCancel());
-        return form;
+        this._element.form = this.createContainerForm(element);
+        this._element.load = this.createContainerLoad();
+        this._element.buttons.success = this.createButtonSuccess();
+        this._element.buttons.cancel = this.createButtonCancel();
+        this._element.form.append(element, this._element.load, this._element.buttons.success, this._element.buttons.cancel);
+        return this._element.form;
     }
 
     createContainerForm(element){
@@ -234,14 +256,50 @@ class DarkEditable{
         form.style.gap = "20px";
         form.addEventListener('submit', async e => {
             e.preventDefault();
-            this.value = element.value;
-            if(this.send){
-                await this.ajax();
+            const newValue = element.value;
+            if(this.send && this.pk && this.url && (this.value != newValue)){
+                this.load(true);
+                const response = await this.ajax(newValue);
+                let data;
+                switch(this.ajaxOptions.dataType){
+                    case "json":
+                        data = await response.json();
+                    break;
+                    case "text":
+                        data = await response.text();
+                    break;
+                }
+                if(response.ok){
+                    this.success(response, newValue);
+                    this.value = element.value;
+                    this.popover.hide();
+                    this.init_text();
+                } else {
+                    this.error(response, newValue);
+                }
+                this.load(false);
+            } else {
+                this.value = element.value;
+                this.popover.hide();
+                this.init_text();
             }
-            this.popover.hide();
-            this.init_text();
         })
         return form;
+    }
+
+    createContainerLoad(){
+        const div = document.createElement(`div`);
+        div.style.display = "none";
+        div.style.position = "absolute";
+        div.style.background = "white";
+        div.style.width = "100%";
+        div.style.height = "100%";
+        div.style.top = 0;
+        div.style.left = 0;
+        const loader = document.createElement(`div`);
+        loader.classList.add("dark-editable-loader");
+        div.append(loader);
+        return div;
     }
 
     /* CONTAINER DIV END */
@@ -265,23 +323,13 @@ class DarkEditable{
         return btn_success;
     }
 
-    // createButtonSuccess(element){
-    //     const btn_success = this.createButtonSuccessNoAction();
-    //     btn_success.addEventListener("click", async () => {
-    //         if(this.send){
-    //             await this.ajax();
-    //         }
-    //         this.value = element.value;
-    //         this.popover.hide();
-    //         this.init_text();
-    //     });
-    //     return btn_success;
-    // }
-
     createButtonCancel(){
         const btn_cancel = this.createButton();
         btn_cancel.classList.add("btn-danger");
-        btn_cancel.innerHTML = "✖";
+        const div = document.createElement("div");
+        div.innerHTML = "✖";
+        div.style.transform = `rotate(45deg)`
+        btn_cancel.append(div);
         btn_cancel.addEventListener("click", () => {
             this.popover.hide();
         });
@@ -292,12 +340,12 @@ class DarkEditable{
 
     /* AJAX */
 
-    async ajax(){
+    async ajax(new_value){
         let url = this.url;
         const form = new FormData;
         form.append("pk", this.pk);
         form.append("name", this.name);
-        form.append("value", this.value);
+        form.append("value", new_value);
         const option = {};
         option.method = this.ajaxOptions.method;
         if(option.method == "POST"){
@@ -306,8 +354,15 @@ class DarkEditable{
             url += "?" + new URLSearchParams(form).toString();
         }
         const response = await fetch(url, option);
-        console.log(response)
         return response;
+    }
+
+    success(response, newValue){
+
+    }
+
+    error(response, newValue){
+
     }
 
     /* AJAX END */
