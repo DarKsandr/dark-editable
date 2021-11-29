@@ -52,6 +52,9 @@ class DarkEditable{
         switch(this.type){
             case "select":
                 get_opt("source", []);
+                if(typeof this.source == "string" && this.source != ""){
+                    this.source = JSON.parse(this.source);
+                }
             break;
             case "date":
                 get_opt("format", "YYYY-MM-DD");

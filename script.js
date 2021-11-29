@@ -2,17 +2,7 @@
 
 const text = document.getElementById("text");
 
-// const popover = new DarkEditable(text, {
-//     type: "select",
-//     value: 1,
-//     source: [
-//         {value: 1, text: "text1"}, {value: 2, text: "text2"}
-//     ],
-// });
-
 const popover = new DarkEditable(text, {
-    type: "text",
-    value: "123",
-    url: "https://reqres.in/api/posts",
-    pk: 1,
+    type: "select",
+    value: 1,
 });
