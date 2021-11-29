@@ -70,9 +70,17 @@ class DarkEditable{
     }
 
     init_text(){
+        const empty_class = "dark-editable-element-empty";
+        this.element.classList.remove(empty_class);
+        let empty = true;
         switch(this.type){
             default:
-                this.element.innerHTML = this.value == "" ? this.emptytext : this.value;
+                if(this.value == ""){
+                    this.element.innerHTML = this.emptytext;
+                } else {
+                    this.element.innerHTML = this.value;
+                    empty = false;
+                }
             break;
             case "select":
                 this.element.innerHTML = this.emptytext;
@@ -80,14 +88,23 @@ class DarkEditable{
                     this.source.forEach(item => {
                         if(item.value == this.value){
                             this.element.innerHTML = item.text;
+                            empty = false;
                         }
                     });
                 }
             break;
             case "date":
             case "datetime":
-                this.element.innerHTML = this.value == "" ? this.emptytext : moment(this.value).format(this.viewformat);
+                if(this.value == ""){
+                    this.element.innerHTML = this.emptytext;
+                } else {
+                    this.element.innerHTML = moment(this.value).format(this.viewformat);
+                    empty = false;
+                }
             break;
+        }
+        if(empty){
+            this.element.classList.add(empty_class);
         }
     }
 

@@ -1,10 +1,15 @@
 .dark-editable-element{
     border-bottom: dashed 1px #0088cc;
+    text-decoration: none;
     cursor: pointer;
 }
 .dark-editable-element-disabled{
     border-bottom: none;
     cursor: default;
+}
+.dark-editable-element-empty{
+  font-style: italic;
+  color: #DD1144;
 }
 .dark-editable{
     max-width: none;
