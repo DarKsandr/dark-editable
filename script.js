@@ -3,6 +3,5 @@
 const text = document.getElementById("text");
 
 const popover = new DarkEditable(text, {
-    type: "select",
-    value: 1,
+    type: "text",
 });

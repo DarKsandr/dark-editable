@@ -1,6 +1,6 @@
 class DarkEditable{
     constructor(element, options = {}){
-        this._element = { form: null, load: null, buttons: {success: null, cancel: null}}
+        this._element = { element: null, form: null, load: null, buttons: {success: null, cancel: null}}
         this.element = element;
         this.options = options;
         
@@ -115,6 +115,9 @@ class DarkEditable{
             customClass: "dark-editable",
             title: this.title,
         });
+        this.element.addEventListener('show.bs.popover', () => {
+            this._element.element.value = this.value;
+        })
     }
 
     /* INIT METHODS END */
@@ -174,14 +177,12 @@ class DarkEditable{
     type_input(){
         const input = this.createElement(`input`);
         input.type = this.type;
-        input.value = this.value;
 
         return this.createContainer(input);
     }
 
     type_textarea(){
         const textarea = this.createElement(`textarea`);
-        textarea.value = this.value;
 
         return this.createContainer(textarea);
     }
@@ -192,9 +193,6 @@ class DarkEditable{
             const opt = document.createElement(`option`);
             opt.value = item.value;
             opt.innerHTML = item.text;
-            if(item.value == this.value){
-                opt.selected = true;
-            }
             select.append(opt);
         });
         
@@ -204,7 +202,6 @@ class DarkEditable{
     type_date(){
         const input = this.createElement(`input`);
         input.type = "date";
-        input.value = this.value;
 
         return this.createContainer(input);
     }
@@ -212,7 +209,6 @@ class DarkEditable{
     type_datetime(){
         const input = this.createElement(`input`);
         input.type = "datetime-local";
-        input.value = this.value;
 
         return this.createContainer(input);
     }
@@ -245,6 +241,7 @@ class DarkEditable{
     /* CONTAINER DIV */
 
     createContainer(element){
+        this._element.element = element;
         this._element.form = this.createContainerForm(element);
         this._element.load = this.createContainerLoad();
         this._element.buttons.success = this.createButtonSuccess();
