@@ -44,7 +44,7 @@ class DarkEditable{
         get_opt("ajaxOptions", {});
         this.ajaxOptions = Object.assign({
             method: "POST",
-            dataType: "json",
+            dataType: "text",
         }, this.ajaxOptions);
         get_opt_bool("send", true);
         get_opt_bool("disabled", false);
@@ -366,7 +366,7 @@ class DarkEditable{
         const option = {};
         option.method = this.ajaxOptions.method;
         if(option.method == "POST"){
-            option.POST = form;
+            option.body = form;
         } else {
             url += "?" + new URLSearchParams(form).toString();
         }
