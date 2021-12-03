@@ -49,6 +49,12 @@ class DarkEditable{
         get_opt_bool("send", true);
         get_opt_bool("disabled", false);
         get_opt_bool("required", false);
+        if(this.options?.success && typeof this.options?.success == "function"){
+            this.success = this.options.success;
+        }
+        if(this.options?.error && typeof this.options?.error == "function"){
+            this.error = this.options.error;
+        }
         switch(this.type){
             case "select":
                 get_opt("source", []);
@@ -277,15 +283,6 @@ class DarkEditable{
             if(this.send && this.pk && this.url && (this.value != newValue)){
                 this.load(true);
                 const response = await this.ajax(newValue);
-                let data;
-                switch(this.ajaxOptions.dataType){
-                    case "json":
-                        data = await response.json();
-                    break;
-                    case "text":
-                        data = await response.text();
-                    break;
-                }
                 if(response.ok){
                     this.success(response, newValue);
                     this.value = element.value;
