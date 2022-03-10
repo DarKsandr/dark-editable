@@ -1,5 +1,5 @@
 # Getting started
-It is an alternative to x-editable. Written in pure JavaScript.
+It is an alternative to [x-editable](https://github.com/vitalets/x-editable). Written in pure JavaScript.
 ## Quick start
 Required
 - Bootstrap 5
