@@ -101,6 +101,20 @@ Options can be defined via javascript or via data-* html attributes.\
 | type        | string          | 'text'         | Type of input. Can be text/textarea/select/date and more                                                                                                 |
 | url         | string | null           | Url for submit, e.g. ```'/post'```                                                                                                                       |
 | value       | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
+# Events
+```
+document.getElementById("username").addEventListener("save", function(e){
+    alert('Saved value');
+})
+```
+| Event        | Callback parameters               | Description                                                                                                    |
+| ------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| show         | - **event** *Object* event object | Fired when container is show and form is rendered.                                                             |
+| shown        | - **event** *Object* event object | Fired when container is shown and form is rendered.                                                            |
+| hide         | - **event** *Object* event object | Fired when container was hide. It occurs on both save or cancel.                                               |
+| hidden       | - **event** *Object* event object | Fired when container was hidden. It occurs on both save or cancel.                                             |
+| init         | - **event** *Object* event object | Fired when element was initialized. Please note that you should setup init handler before applying editable.   |
+| save         | - **event** *Object* event object | Fired when new value was submitted.                                                                            |
 # Inputs
 There are several input types supported by library. Each type may have additional configuration options.\
 Currently supported:

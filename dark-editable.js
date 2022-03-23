@@ -12,6 +12,7 @@ class DarkEditable{
         if(this.disabled){
             this.disable();
         }
+        this.element.dispatchEvent(new CustomEvent("init"));
     }
 
     /* INIT METHODS */
@@ -140,7 +141,17 @@ class DarkEditable{
         });
         this.element.addEventListener('show.bs.popover', () => {
             this._element.element.value = this.value;
-        })
+            this.element.dispatchEvent(new CustomEvent("show"));
+        });
+        this.element.addEventListener('shown.bs.popover', () => {
+            this.element.dispatchEvent(new CustomEvent("shown"));
+        });
+        this.element.addEventListener('hide.bs.popover', () => {
+            this.element.dispatchEvent(new CustomEvent("hide"));
+        });
+        this.element.addEventListener('hidden.bs.popover', () => {
+            this.element.dispatchEvent(new CustomEvent("hidden"));
+        });
     }
 
     /* INIT METHODS END */
@@ -297,6 +308,7 @@ class DarkEditable{
                 this.popover.hide();
                 this.init_text();
             }
+            this.element.dispatchEvent(new CustomEvent("save"));
         })
         return form;
     }
