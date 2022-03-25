@@ -7,20 +7,20 @@ Required
 - Moment.js
 1. Include it on your page. 
     ```
-    <link rel="stylesheet" href="./dist/bootstrap-5/bootstrap.min.css">
-    <script src="./dist/bootstrap-5/bootstrap.bundle.min.js"></script>
-    <script src="./dist/moment.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="moment.js"></script>
     ```
 
 2. Download corresponding dark-editable build and include it on your page:
     ```
-    <link rel="stylesheet" href="./dist/dark-editable/dark-editable.css"> 
-    <script src="./dist/dark-editable/dark-editable.js"></script>
+    <link rel="stylesheet" href="dark-editable.css"> 
+    <script src="dark-editable.js"></script>
     ```
 3. Markup elements that should be editable. Usually it is ```<A>``` element with additional ```data-*``` attributes
 
     ```
-    <a href="#" id="username" data-type="text" data-pk="1" data-url="/post" data-title="Enter username">superuser</a>
+    <a id="username" data-type="text" data-pk="1" data-url="/post" data-title="Enter username">superuser</a>
     ```
     Main attributes you should define are:
     - ```type``` - type of input (text, textarea, select, etc)
@@ -35,7 +35,7 @@ Required
     ```
     Alternatively, you can set all options via javascript
     ```
-    <a href="#" id="username">superuser</a>
+    <a id="username">superuser</a>
     ```
     ```
     const usernameEl = document.getElementById('username');
@@ -101,6 +101,13 @@ Options can be defined via javascript or via data-* html attributes.\
 | type        | string          | 'text'         | Type of input. Can be text/textarea/select/date and more                                                                                                 |
 | url         | string | null           | Url for submit, e.g. ```'/post'```                                                                                                                       |
 | value       | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
+# Methods
+| Method            | Parameters                        | Description                                                   |
+| ----------------- | --------------------------------- | ------------------------------------------------------------- |
+| disable()         | none                              | Disables editable                                             |
+| enable()          | none                              | Enables editable                                              |
+| getValue()        | none                              | Returns current values of editable elements                   |
+| setValue(value)   | - **value** *Mixed* new value     | Sets new value of editable                                    |
 # Events
 ```
 document.getElementById("username").addEventListener("save", function(e){

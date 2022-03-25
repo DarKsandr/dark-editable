@@ -156,22 +156,6 @@ class DarkEditable{
 
     /* INIT METHODS END */
 
-    /* ENABLE/DISABLE */
-
-    enable(){
-        this.disabled = false;
-        this.element.classList.remove("dark-editable-element-disabled");
-        this.popover.enable();
-    }
-
-    disable(){
-        this.disabled = true;
-        this.element.classList.add("dark-editable-element-disabled");
-        this.popover.disable();
-    }
-
-    /* ENABLE/DISABLE END */
-
     route_type(){
         switch(this.type){
             default:
@@ -392,4 +376,29 @@ class DarkEditable{
     }
 
     /* AJAX END */
+
+    /* METHODS */
+
+    enable(){
+        this.disabled = false;
+        this.element.classList.remove("dark-editable-element-disabled");
+        this.popover.enable();
+    }
+
+    disable(){
+        this.disabled = true;
+        this.element.classList.add("dark-editable-element-disabled");
+        this.popover.disable();
+    }
+
+    setValue(value){
+        this.value = value;
+        this.init_text();
+    }
+
+    getValue(){
+        return this.value;
+    }
+
+    /* METHODS END */
 }
