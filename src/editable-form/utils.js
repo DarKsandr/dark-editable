@@ -241,3 +241,7 @@ export function supportsTransitions() {
    }
    return false;
 }
+
+export function is_visible(element){
+    return !(element.style.display === 'none' || element.style.visibility === "hidden");
+}

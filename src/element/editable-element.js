@@ -1,8 +1,8 @@
-import { getConfigData, createInput, supportsTransitions } from "../editable-form/utils";
-import { EditableContainer } from "../editable/bootstrap5-editable/js/bootstrap5-editable";
+import { getConfigData, createInput, supportsTransitions, is_visible } from "../editable-form/utils";
+import { EditableContainer } from "./editable-container";
 
-export class Editable{
-    constructor(element, options) {
+export default class DarkEditable{
+    constructor(element, options = {}) {
         this.element = element;
         //data-* has more priority over js options: because dynamically created elements may change data-* 
         this.options = Object.assign({}, defaults, options, getConfigData(this.element));  
@@ -315,7 +315,7 @@ export class Editable{
     @method show()
     @param {boolean} closeAll Whether to close all other editable containers when showing this one. Default true.
     **/  
-    show(closeAll) {
+    show(closeAll = true) {
         if(this.options.disabled) {
             return;
         }
@@ -326,10 +326,9 @@ export class Editable{
                 value: this.value,
                 input: this.input //pass input to form (as it is already created)
             });
-            new EditableContainer(this.element,containerOptions);
+            this.container = new EditableContainer.container(this.element, containerOptions);
             //listen `save` event 
             this.element.addEventListener("save.internal", this.save);
-            this.container = this.element.dataset.editableContainer; 
         } else if(this.container.tip().is(':visible')) {
             return;
         }      
@@ -354,7 +353,7 @@ export class Editable{
     @param {boolean} closeAll Whether to close all other editable containers when showing this one. Default true.
     **/  
     toggle(closeAll) {
-        if(this.container && this.container.tip().is(':visible')) {
+        if(this.container && is_visible(this.container.tip())) {
             this.hide();
         } else {
             this.show(closeAll);

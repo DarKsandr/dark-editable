@@ -1,4 +1,5 @@
 import { buttons, defaults as form_defaults, loading, template } from "../../../editable-form/editable-form";
+import { EditableContainer as edc } from "../../../element/editable-container";
 
 export class EditableForm{
     constructor(div, options){
@@ -441,7 +442,7 @@ class Popup {
     init(element, options) {
         this.element = element;
         //since 1.4.1 container do not use data-* directly as they already merged into options.
-        this.options = Object.assign({}, defaults, options);         
+        this.options = Object.assign({}, defaults, options);
         this.splitOptions();
         
         //set scope of form callbacks to element
@@ -604,7 +605,7 @@ class Popup {
     **/
     /* Note: poshytip owerwrites this method totally! */          
     show (closeAll) {
-        this.$element.addClass('editable-open');
+        this.element.classList.add('editable-open');
         if(closeAll !== false) {
             //close all open containers (except this)
             this.closeOthers(this.$element[0]);  
@@ -612,7 +613,7 @@ class Popup {
         
         //show container itself
         this.innerShow();
-        this.tip().addClass(this.containerClass);
+        this.tip().classList.add(this.containerClass);
 
         /*
         Currently, form is re-rendered on every show. 
@@ -828,17 +829,11 @@ class Inline {
 
 export class EditableContainer{
     constructor(element, option){
-        const dataKey = 'editableContainer',
-        options = typeof option === 'object' && option,
+        const options = typeof option === 'object' && option,
         Constructor = (options.mode === 'inline') ? Inline : Popup;
-        let data = element.dataset[dataKey];
-
-        if (!data) {
-            element.dataset[dataKey] = data = new Constructor(element, options);
-        }
-
-        // if (typeof option === 'string') { //call method 
-        //     data[option].apply(data, Array.prototype.slice.call(args, 1));
-        // }  
+        
+        return new Constructor(element, options);
     }
 }
+
+edc.container = EditableContainer;
