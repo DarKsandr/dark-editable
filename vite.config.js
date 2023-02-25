@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  root: resolve(__dirname, 'docs'),
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
@@ -10,5 +11,6 @@ export default defineConfig({
       // the proper extensions will be added
       fileName: 'dark-editable',
     },
+    outDir: resolve(__dirname, 'dist'),
   },
 })

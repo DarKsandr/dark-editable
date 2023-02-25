@@ -1,3 +1,4 @@
+import "./editable-form.css";
 export class EditableForm{
     constructor(div, options){
         this.options = Object.assign({}, defaults, options);
@@ -160,13 +161,15 @@ export class EditableForm{
     }
 
     error(msg) {
-        var $group = this.$form.find('.control-group'),
-            $block = this.$form.find('.editable-error-block'),
-            lines;
+        const group = this.form.querySelector('.control-group'),
+            block = this.form.querySelector('.editable-error-block');
+        let lines;
 
         if(msg === false) {
-            $group.removeClass($.fn.editableform.errorGroupClass);
-            $block.removeClass($.fn.editableform.errorBlockClass).empty().hide(); 
+            group.classList.remove(errorGroupClass);
+            block.classList.remove(errorBlockClass); 
+            block.innerHTML = '';
+            block.style.display = 'none';
         } else {
             //convert newline to <br> for more pretty error display
             if(msg) {
@@ -176,8 +179,8 @@ export class EditableForm{
                 }
                 msg = lines.join('<br>');
             }
-            $group.addClass($.fn.editableform.errorGroupClass);
-            $block.addClass($.fn.editableform.errorBlockClass).html(msg).show();
+            group.addClass($.fn.editableform.errorGroupClass);
+            block.addClass($.fn.editableform.errorBlockClass).html(msg).show();
         }
     }
 

@@ -1,3 +1,5 @@
+import { htmlToElement } from "../editable-form/utils";
+
 export const defaults = {  
     /**
     HTML template of input. Normally you should not change it.
@@ -55,7 +57,7 @@ export class AbstractInput{
     */
     prerender(){
         this.tpl = this.options.tpl; //whole tpl as jquery object    
-        this.input = this.tpl;         //control itself, can be changed in render method
+        this.input = htmlToElement(this.tpl);         //control itself, can be changed in render method
         this.clear = null;              //clear button
         this.error = null;               //error message, if input cannot be rendered           
     }

@@ -1,5 +1,6 @@
 import { getConfigData, createInput, supportsTransitions, is_visible } from "../editable-form/utils";
 import { EditableContainer } from "./editable-container";
+import "./editable-element.css";
 
 export default class DarkEditable{
     constructor(element, options = {}) {
@@ -75,7 +76,7 @@ export default class DarkEditable{
                     this.show();
                 } else {
                     //when toggle='click' we should not close all other containers as they will be closed automatically in document click listener
-                    var closeAll = (this.options.toggle !== 'click');
+                    const closeAll = (this.options.toggle !== 'click');
                     this.toggle(closeAll);
                 }
             });
@@ -329,7 +330,7 @@ export default class DarkEditable{
             this.container = new EditableContainer.container(this.element, containerOptions);
             //listen `save` event 
             this.element.addEventListener("save.internal", this.save);
-        } else if(this.container.tip().is(':visible')) {
+        } else if(this.container.tip) {
             return;
         }      
         
@@ -353,7 +354,7 @@ export default class DarkEditable{
     @param {boolean} closeAll Whether to close all other editable containers when showing this one. Default true.
     **/  
     toggle(closeAll) {
-        if(this.container && is_visible(this.container.tip())) {
+        if(this.container && this.container.tip) {
             this.hide();
         } else {
             this.show(closeAll);
@@ -519,6 +520,9 @@ const defaults = {
     @default 'click'
     **/          
     toggle: 'click',
+
+    trigger: 'manual',
+    content: ' ',
     /**
     Text shown when element is empty.
 
@@ -642,7 +646,7 @@ const defaults = {
     });
     </script>
     **/         
-    selector: null,
+    selector: false,
     /**
     Color used to highlight element after update. Implemented via CSS3 transition, works in modern browsers.
     

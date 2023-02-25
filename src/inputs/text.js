@@ -1,3 +1,4 @@
+import { htmlToElement, is_visible, setCursorPosition } from "../editable-form/utils";
 import { AbstractInput, defaults } from "./abstract";
 
 export class Text extends AbstractInput{
@@ -32,18 +33,18 @@ export class Text extends AbstractInput{
         this.init('text', options, Text.defaults);
     }
 
-    render() {
+    async render() {
         this.renderClear();
         this.setClass();
         this.setAttr('placeholder');
      }
 
      activate() {
-         if(this.$input.is(':visible')) {
-             this.$input.focus();
+         if(is_visible(this.input)) {
+             this.input.focus();
 //                if (this.$input.is('input,textarea') && !this.$input.is('[type="checkbox"],[type="range"],[type="number"],[type="email"]')) {
-             if (this.$input.is('input,textarea') && !this.$input.is('[type="checkbox"],[type="range"]')) {
-                 $.fn.editableutils.setCursorPosition(this.$input.get(0), this.$input.val().length);
+             if (this.input.type === 'input' || this.input.type === 'textarea') {
+                setCursorPosition(this.input, this.input.nodeValue.length)
              }
 
              if(this.toggleClear) {
@@ -55,25 +56,26 @@ export class Text extends AbstractInput{
      //render clear button
      renderClear() {
         if (this.options.clear) {
-            this.$clear = $('<span class="editable-clear-x"></span>');
-            this.$input.after(this.$clear)
-                       .css('padding-right', 24)
-                       .keyup($.proxy(function(e) {
-                           //arrows, enter, tab, etc
-                           if(~$.inArray(e.keyCode, [40,38,9,13,27])) {
-                             return;
-                           }
+            this.clearElement = htmlToElement('<span class="editable-clear-x"></span>');
+            this.input.after(this.clearElement)
+            this.input.style['padding-right'] = 24;
+                    //    .css('padding-right', 24)
+                    //    .keyup($.proxy(function(e) {
+                    //        //arrows, enter, tab, etc
+                    //        if(~$.inArray(e.keyCode, [40,38,9,13,27])) {
+                    //          return;
+                    //        }
 
-                           clearTimeout(this.t);
-                           var that = this;
-                           this.t = setTimeout(function() {
-                             that.toggleClear(e);
-                           }, 100);
+                    //        clearTimeout(this.t);
+                    //        var that = this;
+                    //        this.t = setTimeout(function() {
+                    //          that.toggleClear(e);
+                    //        }, 100);
 
-                       }, this))
-                       .parent().css('position', 'relative');
+                    //    }, this))
+                    //    .parent().css('position', 'relative');
 
-            this.$clear.click($.proxy(this.clear, this));
+            this.clearElement.addEventListener('click', () => this.clear());
         }
      }
 

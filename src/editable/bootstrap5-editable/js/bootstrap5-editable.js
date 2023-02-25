@@ -1,14 +1,9 @@
 import { buttons, defaults as form_defaults, loading, template } from "../../../editable-form/editable-form";
 import { EditableContainer as edc } from "../../../element/editable-container";
+import { EditableForm as EF } from "../../../editable-form/editable-form";
+import { htmlToElement, is_visible } from "../../../editable-form/utils";
 
-export class EditableForm{
-    constructor(div, options){
-        this.options = Object.assign({}, form_defaults, options);
-        this.div = div;
-        if(!this.options.scope) {
-            this.options.scope = this;
-        }
-    }
+class EditableForm extends EF{
 
     initInput() {  //called once
         //take input from options (as it is created in editable-element)
@@ -22,11 +17,11 @@ export class EditableForm{
         this.input.prerender();
     }
     initTemplate() {
-        this.form = template; 
+        this.form = htmlToElement(template); 
     }
     initButtons() {
-        const btn = this.form.querySelectorAll('.editable-buttons');
-        btn.append(buttons);
+        const btn = this.form.querySelector('.editable-buttons');
+        btn.append(htmlToElement(buttons));
         if(this.options.showbuttons === 'bottom') {
             btn.classList.add('editable-buttons-bottom');
         }
@@ -38,7 +33,7 @@ export class EditableForm{
     **/        
     render() {
         //init loader
-        this.loading = loading;
+        this.loading = htmlToElement(loading);
         this.div.innerHTML = '';
         this.div.append(this.loading);
         
@@ -64,14 +59,14 @@ export class EditableForm{
         @event rendering 
         @param {Object} event event object
         **/            
-        this.div.triggerHandler('rendering');
+        // this.div.triggerHandler('rendering');
         
         //init input
         this.initInput();
         
         //append input to form
         this.form.querySelectorAll('div.editable-input').forEach(element => {
-            element.append(this.input.tpl);
+            element.append(htmlToElement(this.input.tpl));
         })
         
         //append form to container
@@ -86,22 +81,26 @@ export class EditableForm{
             }
              
             //attach 'cancel' handler
-            this.form.querySelectorAll('.editable-cancel').click($.proxy(this.cancel, this));
+            this.form.querySelectorAll('.editable-cancel').forEach(
+                item => item.addEventListener('click', () => this.cancel())
+            );
             
             if(this.input.error) {
                 this.error(this.input.error);
-                this.$form.find('.editable-submit').attr('disabled', true);
-                this.input.$input.attr('disabled', true);
+                this.form.querySelector('.editable-submit').attr('disabled', true);
+                this.input.attr('disabled', true);
                 //prevent form from submitting
                 this.$form.submit(function(e){ e.preventDefault(); });
             } else {
                 this.error(false);
-                this.input.$input.removeAttr('disabled');
-                this.$form.find('.editable-submit').removeAttr('disabled');
-                var value = (this.value === null || this.value === undefined || this.value === '') ? this.options.defaultValue : this.value;
+                this.input.input.removeAttribute('disabled');
+                this.form.querySelector('.editable-submit')?.removeAttribute('disabled');
+                const value = (this.value === null || this.value === undefined || this.value === '') ? this.options.defaultValue : this.value;
                 this.input.value2input(value);
                 //attach submit handler
-                this.$form.submit($.proxy(this.submit, this));
+                this.form.addEventListener('submit', e => {
+                    this.submit(e);
+                });
             }
 
             /**        
@@ -109,7 +108,7 @@ export class EditableForm{
             @event rendered
             @param {Object} event event object
             **/            
-            this.$div.triggerHandler('rendered');                
+            // this.div.triggerHandler('rendered');                
 
             this.showForm();
             
@@ -131,15 +130,15 @@ export class EditableForm{
         var w, h;
         if(this.form) {
             //set loading size equal to form
-            w = this.form.outerWidth();
-            h = this.form.outerHeight(); 
+            w = this.form.offsetWidth;
+            h = this.form.offsetHeight; 
             if(w) {
                 this.loading.width(w);
             }
             if(h) {
                 this.loading.height(h);
             }
-            this.form.hide();
+            this.form.style.display = 'none';
         } else {
             //stretch loading to fill container width
             w = this.loading.parent().width();
@@ -147,12 +146,12 @@ export class EditableForm{
                 this.loading.width(w);
             }
         }
-        this.loading.show(); 
+        this.loading.style.display = 'block'; 
     }
 
     showForm(activate) {
-        this.loading.hide();
-        this.form.show();
+        this.loading.style.display = 'none';
+        this.form.style.display = 'block';
         if(activate !== false) {
             this.input.activate(); 
         }
@@ -161,29 +160,7 @@ export class EditableForm{
         @event show 
         @param {Object} event event object
         **/                    
-        this.div.triggerHandler('show');
-    }
-
-    error(msg) {
-        var $group = this.$form.find('.control-group'),
-            $block = this.$form.find('.editable-error-block'),
-            lines;
-
-        if(msg === false) {
-            $group.removeClass($.fn.editableform.errorGroupClass);
-            $block.removeClass($.fn.editableform.errorBlockClass).empty().hide(); 
-        } else {
-            //convert newline to <br> for more pretty error display
-            if(msg) {
-                lines = (''+msg).split('\n');
-                for (var i = 0; i < lines.length; i++) {
-                    lines[i] = $('<div>').text(lines[i]).html();
-                }
-                msg = lines.join('<br>');
-            }
-            $group.addClass($.fn.editableform.errorGroupClass);
-            $block.addClass($.fn.editableform.errorBlockClass).html(msg).show();
-        }
+        // this.div.triggerHandler('show');
     }
 
     submit(e) {
@@ -429,11 +406,14 @@ const defaults = {
 
 class Popup {
 
-    containerName = null; //method to call container on element
-    containerDataName = null; //object name in element's .data()
-    innerCss = null; //tbd in child class
     containerClass = 'editable-container editable-popup'; //css class applied to container element
-    defaults = {}; //container itself defaults
+
+    containerName = 'popover'; //method to call container on element
+    containerDataName = 'bs.popover';  //object name in element's .data()
+    innerCss = '.popover-body'; //tbd in child class
+    defaults = bootstrap.Popover.Default;
+
+    popover = null;
 
     constructor (element, options){
         this.init(element, options);
@@ -441,14 +421,17 @@ class Popup {
     
     init(element, options) {
         this.element = element;
-        //since 1.4.1 container do not use data-* directly as they already merged into options.
-        this.options = Object.assign({}, defaults, options);
+        this.options = Object.assign({}, defaults, options, {
+            trigger: 'manual',
+            selector: false,
+            content: ' ',
+            template: this.defaults.template
+        });
+        this.popover = new bootstrap.Popover(this.element, this.options);
         this.splitOptions();
         
         //set scope of form callbacks to element
         this.formOptions.scope = this.element; 
-        
-        this.initContainer();
         
         //flag to hide container, when saving value will finish
         this.delayedHide = false;
@@ -533,69 +516,68 @@ class Popup {
     @method tip()
     */         
     tip() {
-        return this.container() ? this.container().$tip : null;
+        return this.container() ? this.container().tip : null;
     }
 
     /* returns container object */
     container() {
-        let container;
-        //first, try get it by `containerDataName`
-        if(this.containerDataName) {
-            if(container = this.element.dataset[this.containerDataName]) {
-                return container;
-            }
-        }
-        //second, try `containerName`
-        container = this.element.dataset[this.containerDataName];
-        return container;
+        // let container;
+        // //first, try get it by `containerDataName`
+        // if(this.containerDataName) {
+        //     if(container = this.element.dataset[this.containerDataName]) {
+        //         return container;
+        //     }
+        // }
+        // //second, try `containerName`
+        // container = this.element.dataset[this.containerDataName];
+        // return container;
+        return this.popover;
     }
 
     /* call native method of underlying container, e.g. this.$element.popover('method') */ 
     call() {
+        console.log(this.popover);
         // this.element[this.containerName].apply(this.element, arguments); 
-    }
-    
-    initContainer(){
-        this.call(this.containerOptions);
     }
 
     renderForm() {
-        this.$form
-        .editableform(this.formOptions)
-        .on({
-            save: $.proxy(this.save, this), //click on submit button (value changed)
-            nochange: $.proxy(function(){ this.hide('nochange'); }, this), //click on submit button (value NOT changed)                
-            cancel: $.proxy(function(){ this.hide('cancel'); }, this), //click on cancel button
-            show: $.proxy(function() {
-                if(this.delayedHide) {
-                    this.hide(this.delayedHide.reason);
-                    this.delayedHide = false;
-                } else {
-                    this.setPosition();
-                }
-            }, this), //re-position container every time form is shown (occurs each time after loading state)
-            rendering: $.proxy(this.setPosition, this), //this allows to place container correctly when loading shown
-            resize: $.proxy(this.setPosition, this), //this allows to re-position container when form size is changed 
-            rendered: $.proxy(function(){
-                /**        
-                Fired when container is shown and form is rendered (for select will wait for loading dropdown options).  
-                **Note:** Bootstrap popover has own `shown` event that now cannot be separated from x-editable's one.
-                The workaround is to check `arguments.length` that is always `2` for x-editable.                     
+        const form = new EditableForm(this.form, this.formOptions);
+        form.render();
+        // .editableform()
+        // .on({
+        //     save: $.proxy(this.save, this), //click on submit button (value changed)
+        //     nochange: $.proxy(function(){ this.hide('nochange'); }, this), //click on submit button (value NOT changed)                
+        //     cancel: $.proxy(function(){ this.hide('cancel'); }, this), //click on cancel button
+        //     show: $.proxy(function() {
+        //         if(this.delayedHide) {
+        //             this.hide(this.delayedHide.reason);
+        //             this.delayedHide = false;
+        //         } else {
+        //             this.setPosition();
+        //         }
+        //     }, this), //re-position container every time form is shown (occurs each time after loading state)
+        //     rendering: $.proxy(this.setPosition, this), //this allows to place container correctly when loading shown
+        //     resize: $.proxy(this.setPosition, this), //this allows to re-position container when form size is changed 
+        //     rendered: $.proxy(function(){
+        //         /**        
+        //         Fired when container is shown and form is rendered (for select will wait for loading dropdown options).  
+        //         **Note:** Bootstrap popover has own `shown` event that now cannot be separated from x-editable's one.
+        //         The workaround is to check `arguments.length` that is always `2` for x-editable.                     
                 
-                @event shown 
-                @param {Object} event event object
-                @example
-                $('#username').on('shown', function(e, editable) {
-                    editable.input.$input.val('overwriting value of input..');
-                });                     
-                **/                      
-                /*
-                 TODO: added second param mainly to distinguish from bootstrap's shown event. It's a hotfix that will be solved in future versions via namespaced events.  
-                */
-                this.$element.triggerHandler('shown', $(this.options.scope).data('editable')); 
-            }, this) 
-        })
-        .editableform('render');
+        //         @event shown 
+        //         @param {Object} event event object
+        //         @example
+        //         $('#username').on('shown', function(e, editable) {
+        //             editable.input.$input.val('overwriting value of input..');
+        //         });                     
+        //         **/                      
+        //         /*
+        //          TODO: added second param mainly to distinguish from bootstrap's shown event. It's a hotfix that will be solved in future versions via namespaced events.  
+        //         */
+        //         this.$element.triggerHandler('shown', $(this.options.scope).data('editable')); 
+        //     }, this) 
+        // })
+        // .editableform('render');
     } 
 
     /**
@@ -613,7 +595,7 @@ class Popup {
         
         //show container itself
         this.innerShow();
-        this.tip().classList.add(this.containerClass);
+        // this.tip().classList.add(this.containerClass);
 
         /*
         Currently, form is re-rendered on every show. 
@@ -625,19 +607,19 @@ class Popup {
         */             
         
         //if form already exist - delete previous data 
-        if(this.$form) {
+        if(this.form) {
             //todo: destroy prev data!
             //this.$form.destroy();
         }
 
-        this.$form = $('<div>');
+        this.form = document.createElement('div');
         
         //insert form into container body
-        if(this.tip().is(this.innerCss)) {
+        if(this.tip().classList.contains(this.innerCss.replace('.', ''))) {
             //for inline container
-            this.tip().append(this.$form); 
+            this.tip().append(this.form); 
         } else {
-            this.tip().find(this.innerCss).append(this.$form);
+            this.tip().querySelector(this.innerCss).append(this.form);
         } 
         
         //render form
@@ -650,19 +632,19 @@ class Popup {
     @param {string} reason Reason caused hiding. Can be <code>save|cancel|onblur|nochange|undefined (=manual)</code>
     **/         
     hide(reason) {  
-        if(!this.tip() || !this.tip().is(':visible') || !this.$element.hasClass('editable-open')) {
+        if(!this.tip() || !is_visible(this.tip()) || !this.element.classList.contains('editable-open')) {
             return;
         }
         
         //if form is saving value, schedule hide
-        if(this.$form.data('editableform').isSaving) {
+        if(this.form?.isSaving) {
             this.delayedHide = {reason: reason};
             return;    
         } else {
             this.delayedHide = false;
         }
 
-        this.$element.removeClass('editable-open');   
+        this.element.classList.remove('editable-open');   
         this.innerHide();
 
         /**
@@ -681,17 +663,17 @@ class Popup {
             } 
         });
         **/
-        this.$element.triggerHandler('hidden', reason || 'manual');   
+        // this.$element.triggerHandler('hidden', reason || 'manual');   
     }
 
     /* internal show method. To be overwritten in child classes */
     innerShow () {
-         
+        this.popover.show();
     }
 
     /* internal hide method. To be overwritten in child classes */
     innerHide () {
-
+        this.popover.hide();
     }
     
     /**
@@ -762,7 +744,7 @@ class Popup {
     }
     
     setContainerOption(key, value) {
-        this.call('option', key, value);
+        // this.call('option', key, value);
     }
 
     /**
@@ -778,7 +760,7 @@ class Popup {
     
     /* to be overwritten in child classes */
     innerDestroy() {
-        
+        this.popover.dispose();
     }
     
     /*
@@ -820,17 +802,14 @@ class Popup {
     } 
 }
 
-class Inline {
-    constructor (element, options){
-        this.init(element, options);
-    }
+class Inline extends Popup {
     
 };  
 
 export class EditableContainer{
     constructor(element, option){
-        const options = typeof option === 'object' && option,
-        Constructor = (options.mode === 'inline') ? Inline : Popup;
+        const options = typeof option === 'object' && option;
+        const Constructor = (options.mode === 'inline') ? Inline : Popup;
         
         return new Constructor(element, options);
     }
