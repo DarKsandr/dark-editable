@@ -141,6 +141,7 @@ class DarkEditable{
         });
         this.element.addEventListener('show.bs.popover', () => {
             this._element.element.value = this.value;
+            this.hideError();
             this.element.dispatchEvent(new CustomEvent("show"));
         });
         this.element.addEventListener('shown.bs.popover', () => {
@@ -256,16 +257,42 @@ class DarkEditable{
 
     /* DIV LOAD END */
 
+    /* DIV ERROR */
+
+    setError(errorMsg){
+        this._element.error.innerHTML = errorMsg;
+    }
+
+    showError(){
+        this._element.error.style.display = "block";
+    }
+
+    hideError(){
+        this._element.error.style.display = "none";
+    }
+
+    /* DIV ERROR END */
+
     /* CONTAINER DIV */
 
     createContainer(element){
+        const div = document.createElement(`div`);
         this._element.element = element;
+        this._element.error = this.createContainerError();
         this._element.form = this.createContainerForm(element);
         this._element.load = this.createContainerLoad();
         this._element.buttons.success = this.createButtonSuccess();
         this._element.buttons.cancel = this.createButtonCancel();
         this._element.form.append(element, this._element.load, this._element.buttons.success, this._element.buttons.cancel);
-        return this._element.form;
+        div.append(this._element.error, this._element.form);
+        return div;
+    }
+
+    createContainerError(){
+        const div = document.createElement(`div`);
+        div.classList.add("text-danger", "fst-italic", "mb-2", "fw-bold");
+        div.style.display = "none";
+        return div;
     }
 
     createContainerForm(element){
@@ -277,14 +304,28 @@ class DarkEditable{
             const newValue = element.value;
             if(this.send && this.pk && this.url && (this.value != newValue)){
                 this.load(true);
-                const response = await this.ajax(newValue);
-                if(response.ok){
-                    this.success(response, newValue);
+                let msg;
+                try {
+                    const response = await this.ajax(newValue);
+                    if(response.ok){
+                        msg = this.success(response, newValue);
+                    } else {
+                        msg = this.error(response, newValue) || `${response.status} ${response.statusText}`;
+                    }
+                } catch (error) {
+                    console.error(error);
+                    msg = error;
+                }
+                
+                if(msg){
+                    this.setError(msg);
+                    this.showError();
+                } else {
+                    this.setError(null);
+                    this.hideError();
                     this.value = element.value;
                     this.popover.hide();
                     this.init_text();
-                } else {
-                    this.error(response, newValue);
                 }
                 this.load(false);
             } else {
@@ -338,7 +379,6 @@ class DarkEditable{
         btn_cancel.classList.add("btn-danger");
         const div = document.createElement("div");
         div.innerHTML = "✖";
-        div.style.transform = `rotate(45deg)`
         btn_cancel.append(div);
         btn_cancel.addEventListener("click", () => {
             this.popover.hide();
@@ -350,7 +390,7 @@ class DarkEditable{
 
     /* AJAX */
 
-    async ajax(new_value){
+    ajax(new_value){
         let url = this.url;
         const form = new FormData;
         form.append("pk", this.pk);
@@ -363,8 +403,7 @@ class DarkEditable{
         } else {
             url += "?" + new URLSearchParams(form).toString();
         }
-        const response = await fetch(url, option);
-        return response;
+        return fetch(url, option);
     }
 
     success(response, newValue){

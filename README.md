@@ -70,14 +70,15 @@ Required
     **JSON response:**\
     If your server returns JSON, you can always send HTTP status 200 with error flag in response body.\
     To process it use success handler:
-    ```
-    //assume server response: 200 Ok {status: 'error', msg: 'field cannot be empty!'}
 
+    response - [Fetch Response](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+    ```
     const usernameEl = document.getElementById('username');
     const popover = new DarkEditable(usernameEl, {
         ...
-        success: function(response, newValue) {
-            if(response.status == 'error') return response.msg; //msg will be shown in editable form
+        success: async function(response, newValue) {
+            const res = await response.json();
+            if(res.error == 'error') return res.msg; //msg will be shown in editable form
         }
     });
     ```
