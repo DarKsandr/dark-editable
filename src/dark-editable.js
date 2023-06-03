@@ -1,4 +1,6 @@
-class DarkEditable{
+import "./dark-editable.css";
+
+export default class DarkEditable{
     constructor(element, options = {}){
         this._element = { element: null, form: null, load: null, buttons: {success: null, cancel: null}}
         this.element = element;
@@ -308,9 +310,9 @@ class DarkEditable{
                 try {
                     const response = await this.ajax(newValue);
                     if(response.ok){
-                        msg = this.success(response, newValue);
+                        msg = await this.success(response, newValue);
                     } else {
-                        msg = this.error(response, newValue) || `${response.status} ${response.statusText}`;
+                        msg = await this.error(response, newValue) || `${response.status} ${response.statusText}`;
                     }
                 } catch (error) {
                     console.error(error);
@@ -406,11 +408,11 @@ class DarkEditable{
         return fetch(url, option);
     }
 
-    success(response, newValue){
+    async success(response, newValue){
 
     }
 
-    error(response, newValue){
+    async error(response, newValue){
 
     }
 
