@@ -1,15 +1,27 @@
 import "./dark-editable.css";
+import PopupMode from "./Modes/PopupMode.js";
+import InlineMode from "./Modes/InlineMode.js";
 
 export default class DarkEditable{
+    modeElement = null;
     constructor(element, options = {}){
         this._element = { element: null, form: null, load: null, buttons: {success: null, cancel: null}}
         this.element = element;
         this.options = options;
         
         this.init_options();
-        this.init_popover();
+        switch (this.mode){
+            default:
+                throw new Error(`Mode ${this.mode} not found!`)
+            case 'popup':
+                this.modeElement = new PopupMode(this);
+                break;
+            case 'inline':
+                this.modeElement = new InlineMode(this);
+                break;
+        }
+        this.modeElement.init();
         this.init_text();
-        this.init_hide_onclick();
         this.init_style();
         if(this.disabled){
             this.disable();
@@ -25,10 +37,10 @@ export default class DarkEditable{
         }
         const get_opt_bool = (name, default_value) => {
             get_opt(name, default_value);
-            if(typeof this[ name ] != "boolean"){
-                if(this[ name ] == "true") {
+            if(typeof this[ name ] !== "boolean"){
+                if(this[ name ] === "true") {
                     this[ name ] = true;
-                } else if(this[ name ] == "false") {
+                } else if(this[ name ] === "false") {
                     this[ name ] = false;
                 } else {
                     this[ name ] = default_value;
@@ -43,6 +55,7 @@ export default class DarkEditable{
         get_opt("title", "");
         get_opt("type", "text");
         get_opt("emptytext", "Empty");
+        get_opt("mode", "popup");
         get_opt("url", null);
         get_opt("ajaxOptions", {});
         this.ajaxOptions = Object.assign({
@@ -61,7 +74,7 @@ export default class DarkEditable{
         switch(this.type){
             case "select":
                 get_opt("source", []);
-                if(typeof this.source == "string" && this.source != ""){
+                if(typeof this.source == "string" && this.source !== ""){
                     this.source = JSON.parse(this.source);
                 }
             break;
@@ -84,7 +97,7 @@ export default class DarkEditable{
         let empty = true;
         switch(this.type){
             default:
-                if(this.value == ""){
+                if(this.value === ""){
                     this.element.innerHTML = this.emptytext;
                 } else {
                     this.element.innerHTML = this.value;
@@ -93,7 +106,7 @@ export default class DarkEditable{
             break;
             case "select":
                 this.element.innerHTML = this.emptytext;
-                if(this.value != "" && this.source.length > 0){
+                if(this.value !== "" && this.source.length > 0){
                     this.source.forEach(item => {
                         if(item.value == this.value){
                             this.element.innerHTML = item.text;
@@ -104,7 +117,7 @@ export default class DarkEditable{
             break;
             case "date":
             case "datetime":
-                if(this.value == ""){
+                if(this.value === ""){
                     this.element.innerHTML = this.emptytext;
                 } else {
                     this.element.innerHTML = moment(this.value).format(this.viewformat);
@@ -119,42 +132,6 @@ export default class DarkEditable{
 
     init_style(){
         this.element.classList.add("dark-editable-element");
-    }
-
-    init_hide_onclick(){
-        document.addEventListener('click', (e) => {
-            const target = e.target;
-            if(target === this.popover.tip || target == this.element) return;
-            let current = target;
-            while(current = current.parentNode){
-                if(current === this.popover.tip) return;
-            }
-            this.popover.hide();
-        })
-    }
-
-    init_popover(){
-        this.popover = new bootstrap.Popover(this.element, {
-            container: "body",
-            content: this.route_type(),
-            html: true,
-            customClass: "dark-editable",
-            title: this.title,
-        });
-        this.element.addEventListener('show.bs.popover', () => {
-            this._element.element.value = this.value;
-            this.hideError();
-            this.element.dispatchEvent(new CustomEvent("show"));
-        });
-        this.element.addEventListener('shown.bs.popover', () => {
-            this.element.dispatchEvent(new CustomEvent("shown"));
-        });
-        this.element.addEventListener('hide.bs.popover', () => {
-            this.element.dispatchEvent(new CustomEvent("hide"));
-        });
-        this.element.addEventListener('hidden.bs.popover', () => {
-            this.element.dispatchEvent(new CustomEvent("hidden"));
-        });
     }
 
     /* INIT METHODS END */
@@ -239,7 +216,7 @@ export default class DarkEditable{
     /* ADD FOCUS */
 
     add_focus(element){
-        this.element.addEventListener('shown.bs.popover', function(){
+        this.element.addEventListener('shown', function(){
             element.focus();
         });
     }
@@ -270,7 +247,9 @@ export default class DarkEditable{
     }
 
     hideError(){
-        this._element.error.style.display = "none";
+        if(this._element.error){
+            this._element.error.style.display = "none";
+        }
     }
 
     /* DIV ERROR END */
@@ -326,13 +305,13 @@ export default class DarkEditable{
                     this.setError(null);
                     this.hideError();
                     this.value = element.value;
-                    this.popover.hide();
+                    this.modeElement.hide();
                     this.init_text();
                 }
                 this.load(false);
             } else {
                 this.value = element.value;
-                this.popover.hide();
+                this.modeElement.hide();
                 this.init_text();
             }
             this.element.dispatchEvent(new CustomEvent("save"));
@@ -383,7 +362,7 @@ export default class DarkEditable{
         div.innerHTML = "✖";
         btn_cancel.append(div);
         btn_cancel.addEventListener("click", () => {
-            this.popover.hide();
+            this.modeElement.hide();
         });
         return btn_cancel;
     }
@@ -423,13 +402,14 @@ export default class DarkEditable{
     enable(){
         this.disabled = false;
         this.element.classList.remove("dark-editable-element-disabled");
-        this.popover.enable();
+        this.modeElement.enable();
+
     }
 
     disable(){
         this.disabled = true;
         this.element.classList.add("dark-editable-element-disabled");
-        this.popover.disable();
+        this.modeElement.enable();
     }
 
     setValue(value){
