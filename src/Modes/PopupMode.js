@@ -4,7 +4,7 @@ export default class PopupMode extends BaseMode{
     init(){
         this.popover = new bootstrap.Popover(this.context.element, {
             container: "body",
-            content: this.context.route_type(),
+            content: this.context.typeElement.create(),
             html: true,
             customClass: "dark-editable",
             title: this.context.title,

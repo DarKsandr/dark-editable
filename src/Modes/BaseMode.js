@@ -6,8 +6,8 @@ export default class BaseMode{
         this.context = context;
     }
     event_show(){
-        this.context.hideError();
-        this.context._element.element.value = this.context.value;
+        this.context.typeElement.hideError();
+        this.context.typeElement.element.value = this.context.value;
         this.context.element.dispatchEvent(new CustomEvent("show"));
     }
     event_shown(){
