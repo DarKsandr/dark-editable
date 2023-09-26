@@ -107,7 +107,7 @@ Required
 Options can be defined via javascript or via data-* html attributes.
 
 | Name         | Type            | Default        | Description                                                                                                                                              |
-|--------------| --------------- |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+|--------------|-----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ajaxOptions  | object          | null           | Text shown when element is empty                                                                                                                         |
 | disabled     | boolean         | false          | Sets disabled state of editable                                                                                                                          |
 | emptytext    | string          | 'Empty'        | Text shown when element is empty.                                                                                                                        |
@@ -116,7 +116,7 @@ Options can be defined via javascript or via data-* html attributes.
 | name         | string          | null           | Name of field. Will be submitted on server. Can be taken from ```id``` attribute                                                                         |
 | pk           | string          | null           | Primary key of editable object (e.g. record id in database).                                                                                             |
 | send         | boolean         | true           | Strategy for sending data on server. When ```true``` data will be sent on server only if pk and url defined, otherwise new value will be stored locally. |
-| type         | string          | 'text'         | Type of input. Can be text/textarea/select/date and more                                                                                                 |
+| type         | string or Class | 'text'         | Type of input. Can be text/textarea/select/date and more                                                                                                 |
 | url          | string          | null           | Url for submit, e.g. ```'/post'```                                                                                                                       |
 | value        | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
 | mode         | string          | 'popup'        | Mode of editable, can be popup or inline.                                                                                                                |
