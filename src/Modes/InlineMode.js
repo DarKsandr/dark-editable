@@ -4,7 +4,7 @@ export default class InlineMode extends BaseMode{
     init(){
         const open = () => {
             if(!this.context.disabled){
-                const item = this.context.route_type();
+                const item = this.context.typeElement.create();
                 this.event_show();
                 this.context.element.removeEventListener('click', open);
                 this.context.element.innerHTML = '';
