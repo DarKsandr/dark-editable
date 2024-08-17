@@ -5,6 +5,12 @@ Heres a quick demo on [jfiddle](https://jsfiddle.net/YohnJohn/c3t1avrp/40/) to g
 
 
 ## Quick start
+You can install via npm 
+```
+npm i dark-editable
+```
+or manually:
+
 Required
 - Bootstrap 5
 - Popper

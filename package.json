@@ -16,7 +16,8 @@
     }
   },
   "dependencies": {
-    "bootstrap": ">=5"
+    "bootstrap": "^5.3",
+    "moment": "^2.30.1"
   },
   "devDependencies": {
     "vite": "^4.3.9"
@@ -26,7 +27,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "version": "1.4.1",
+  "version": "1.4.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DarKsandr/dark-editable.git"
