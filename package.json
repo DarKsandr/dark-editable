@@ -4,7 +4,9 @@
   "author": "DarKsandr",
   "license": "MIT",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/dark-editable.umd.cjs",
   "module": "./dist/dark-editable.js",
   "exports": {
@@ -23,5 +25,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
-  }
+  },
+  "version": "1.4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarKsandr/dark-editable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DarKsandr/dark-editable/issues"
+  },
+  "homepage": "https://github.com/DarKsandr/dark-editable#readme"
 }
