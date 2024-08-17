@@ -1,3 +1,4 @@
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import "./dark-editable.css";
 import PopupMode from "./Modes/PopupMode.js";
 import InlineMode from "./Modes/InlineMode.js";
