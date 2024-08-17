@@ -1,5 +1,8 @@
 {
   "name": "dark-editable",
+  "description": "In-place editing with Bootstrap 5, Popper, Moment.js",
+  "author": "DarKsandr",
+  "license": "MIT",
   "type": "module",
   "files": ["dist"],
   "main": "./dist/dark-editable.umd.cjs",
@@ -9,6 +12,9 @@
       "import": "./dist/dark-editable.js",
       "require": "./dist/dark-editable.umd.cjs"
     }
+  },
+  "dependencies": {
+    "bootstrap": ">=5"
   },
   "devDependencies": {
     "vite": "^4.3.9"

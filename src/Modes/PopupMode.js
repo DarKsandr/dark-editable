@@ -1,8 +1,9 @@
+import { Popover } from "bootstrap";
 import BaseMode from "./BaseMode.js";
 
 export default class PopupMode extends BaseMode{
     init(){
-        this.popover = new bootstrap.Popover(this.context.element, {
+        this.popover = new Popover(this.context.element, {
             container: "body",
             content: this.context.typeElement.create(),
             html: true,
