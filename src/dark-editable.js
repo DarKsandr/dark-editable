@@ -1,4 +1,3 @@
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import "./dark-editable.css";
 import PopupMode from "./Modes/PopupMode.js";
 import InlineMode from "./Modes/InlineMode.js";
@@ -9,6 +8,10 @@ import SelectType from "./Types/SelectType.js";
 import DateType from "./Types/DateType.js";
 import DateTimeType from "./Types/DateTimeType.js";
 
+/*!
+ * DarkEditable.js
+ * License: MIT
+ */
 export default class DarkEditable{
     modeElement = null;
     typeElement = null;
