@@ -31,12 +31,12 @@ Required
     If you can import then use:
     ```
     dist/dark-editable.js
-    dist/style.css
+    dist/dark-editable.css
     ```
     If you just want to connect globally to the page then use:
     ```
     dist/dark-editable.iife.js
-    dist/style.css
+    dist/dark-editable.css
     ```
 
 3. Markup elements that should be editable. Usually it is ```<A>``` element with additional ```data-*``` attributes

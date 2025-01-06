@@ -1,6 +1,6 @@
 var wo = Object.defineProperty;
 var To = (t, e, s) => e in t ? wo(t, e, { enumerable: !0, configurable: !0, writable: !0, value: s }) : t[e] = s;
-var z = (t, e, s) => (To(t, typeof e != "symbol" ? e + "" : e, s), s);
+var z = (t, e, s) => To(t, typeof e != "symbol" ? e + "" : e, s);
 var K = "top", J = "bottom", ee = "right", q = "left", Ps = "auto", Ct = [K, J, ee, q], rt = "start", St = "end", Tr = "clippingParents", Vn = "viewport", pt = "popper", Sr = "reference", Dn = /* @__PURE__ */ Ct.reduce(function(t, e) {
   return t.concat([e + "-" + rt, e + "-" + St]);
 }, []), Fn = /* @__PURE__ */ [].concat(Ct, [Ps]).reduce(function(t, e) {
@@ -573,8 +573,7 @@ function Go(t) {
           return F = Wt, "break";
       }, Rt = ls; Rt > 0; Rt--) {
         var cs = nn(Rt);
-        if (cs === "break")
-          break;
+        if (cs === "break") break;
       }
     e.placement !== F && (e.modifiersData[n]._skip = !0, e.placement = F, e.reset = !0);
   }
@@ -1029,7 +1028,7 @@ const Re = /* @__PURE__ */ new Map(), ln = {
     X(t);
     return;
   }
-  const n = 5, i = _l(e) + n;
+  const i = _l(e) + 5;
   let r = !1;
   const a = ({
     target: o
@@ -3307,12 +3306,10 @@ class Sh extends Gs {
       this.event_hidden();
     }), document.addEventListener("click", (e) => {
       const s = e.target;
-      if (s === this.popover.tip || s === this.context.element)
-        return;
+      if (s === this.popover.tip || s === this.context.element) return;
       let n = s;
       for (; n = n.parentNode; )
-        if (n === this.popover.tip)
-          return;
+        if (n === this.popover.tip) return;
       this.hide();
     });
   }
@@ -3363,7 +3360,7 @@ class ct {
   }
   createContainer(e) {
     const s = document.createElement("div");
-    return this.element = e, this.error = this.createContainerError(), this.form = this.createContainerForm(), this.load = this.createContainerLoad(), this.buttons.success = this.createButtonSuccess(), this.buttons.cancel = this.createButtonCancel(), this.form.append(e, this.load, this.buttons.success, this.buttons.cancel), s.append(this.error, this.form), s;
+    return this.element = e, this.error = this.createContainerError(), this.form = this.createContainerForm(), this.load = this.createContainerLoad(), this.form.append(e, this.load), this.buttons.success = null, this.buttons.cancel = null, this.context.showbuttons && (this.buttons.success = this.createButtonSuccess(), this.buttons.cancel = this.createButtonCancel(), this.form.append(this.buttons.success, this.buttons.cancel)), s.append(this.error, this.form), s;
   }
   createContainerError() {
     const e = document.createElement("div");
@@ -3439,7 +3436,9 @@ class ct {
   }
   createElement(e) {
     const s = document.createElement(e);
-    return s.classList.add("form-control"), this.context.required && (s.required = this.context.required), this.add_focus(s), s;
+    return s.classList.add("form-control"), this.context.required && (s.required = this.context.required), this.context.showbuttons || s.addEventListener("change", () => {
+      this.form.dispatchEvent(new Event("submit"));
+    }), this.add_focus(s), s;
   }
   add_focus(e) {
     this.context.element.addEventListener("shown", function() {
@@ -3996,8 +3995,13 @@ function Ia(t, e, s) {
         return void (i ? n.setUTCHours(s) : n.setHours(s));
       case "Date":
         return void (i ? n.setUTCDate(s) : n.setDate(s));
+      // case 'Day': // Not real
+      //    return void (isUTC ? d.setUTCDay(value) : d.setDay(value));
+      // case 'Month': // Not used because we need to pass two variables
+      //     return void (isUTC ? d.setUTCMonth(value) : d.setMonth(value));
       case "FullYear":
         break;
+      // See below ...
       default:
         return;
     }
@@ -4852,7 +4856,7 @@ function Rn(t) {
 function S_(t, e, s) {
   var n = Math.min(t.length, e.length), i = Math.abs(t.length - e.length), r = 0, a;
   for (a = 0; a < n; a++)
-    (s && t[a] !== e[a] || !s && T(t[a]) !== T(e[a])) && r++;
+    T(t[a]) !== T(e[a]) && r++;
   return r + i;
 }
 function Za(t, e) {
@@ -4890,8 +4894,7 @@ function A_(t, e, s) {
     if (typeof t == "string") {
       if (t = bi(Xs, t), t === null)
         return this;
-    } else
-      Math.abs(t) < 16 && !s && (t = t * 60);
+    } else Math.abs(t) < 16 && !s && (t = t * 60);
     return !this._isUTC && e && (i = Wn(this)), this._offset = t, this._isUTC = !0, i != null && this.add(i, "m"), n !== t && (!e || this._changeInProgress ? Ja(
       this,
       me(t - n, "m"),
@@ -5107,18 +5110,23 @@ function ep(t, e, s) {
     case "second":
       r = (this - n) / 1e3;
       break;
+    // 1000
     case "minute":
       r = (this - n) / 6e4;
       break;
+    // 1000 * 60
     case "hour":
       r = (this - n) / 36e5;
       break;
+    // 1000 * 60 * 60
     case "day":
       r = (this - n - i) / 864e5;
       break;
+    // 1000 * 60 * 60 * 24, negate dst
     case "week":
       r = (this - n - i) / 6048e5;
       break;
+    // 1000 * 60 * 60 * 24 * 7, negate dst
     default:
       r = this - n;
   }
@@ -5906,6 +5914,7 @@ function rm(t) {
         return e * 1440 + n / 6e4;
       case "second":
         return e * 86400 + n / 1e3;
+      // Math.floor prevents floating point math errors here
       case "millisecond":
         return Math.floor(e * 864e5) + n;
       default:
@@ -6110,7 +6119,7 @@ class xm {
     this.get_opt("value", this.element.innerHTML), this.get_opt("name", this.element.id), this.get_opt("pk", null), this.get_opt("title", ""), this.get_opt("type", "text"), this.get_opt("emptytext", "Empty"), this.get_opt("mode", "popup"), this.get_opt("url", null), this.get_opt("ajaxOptions", {}), this.ajaxOptions = Object.assign({
       method: "POST",
       dataType: "text"
-    }, this.ajaxOptions), this.get_opt_bool("send", !0), this.get_opt_bool("disabled", !1), this.get_opt_bool("required", !1), (e = this.options) != null && e.success && typeof ((s = this.options) == null ? void 0 : s.success) == "function" && (this.success = this.options.success), (n = this.options) != null && n.error && typeof ((i = this.options) == null ? void 0 : i.error) == "function" && (this.error = this.options.error);
+    }, this.ajaxOptions), this.get_opt_bool("send", !0), this.get_opt_bool("disabled", !1), this.get_opt_bool("required", !1), this.get_opt_bool("showbuttons", !0), (e = this.options) != null && e.success && typeof ((s = this.options) == null ? void 0 : s.success) == "function" && (this.success = this.options.success), (n = this.options) != null && n.error && typeof ((i = this.options) == null ? void 0 : i.error) == "function" && (this.error = this.options.error);
   }
   init_text() {
     const e = "dark-editable-element-empty";
