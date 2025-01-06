@@ -22,9 +22,15 @@ export default class BaseType{
         this.error = this.createContainerError();
         this.form = this.createContainerForm();
         this.load = this.createContainerLoad();
-        this.buttons.success = this.createButtonSuccess();
-        this.buttons.cancel = this.createButtonCancel();
-        this.form.append(element, this.load, this.buttons.success, this.buttons.cancel);
+        this.form.append(element, this.load);
+        this.buttons.success = null;
+        this.buttons.cancel = null;
+        if(this.context.showbuttons){
+            this.buttons.success = this.createButtonSuccess();
+            this.buttons.cancel = this.createButtonCancel();
+            this.form.append(this.buttons.success, this.buttons.cancel);
+        }
+
         div.append(this.error, this.form);
         return div;
     }
@@ -174,6 +180,11 @@ export default class BaseType{
         element.classList.add("form-control");
         if(this.context.required){
             element.required = this.context.required;
+        }
+        if(!this.context.showbuttons){
+            element.addEventListener('change', () => {
+                this.form.dispatchEvent(new Event('submit'));
+            });
         }
         this.add_focus(element);
         return element;
