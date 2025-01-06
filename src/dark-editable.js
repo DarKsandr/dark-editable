@@ -73,6 +73,7 @@ export default class DarkEditable{
         this.get_opt_bool("send", true);
         this.get_opt_bool("disabled", false);
         this.get_opt_bool("required", false);
+        this.get_opt_bool("showbuttons", true);
         if(this.options?.success && typeof this.options?.success == "function"){
             this.success = this.options.success;
         }
