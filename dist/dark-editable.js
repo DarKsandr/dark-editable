@@ -1,16 +1,19 @@
-import './dark-editable.css';var l = Object.defineProperty;
-var d = (o, t, e) => t in o ? l(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var i = (o, t, e) => d(o, typeof t != "symbol" ? t + "" : t, e);
-import { Popover as u } from "bootstrap";
-import p from "moment";
-class c {
-  constructor(t) {
-    if (this.constructor === c)
-      throw new Error("It's abstract class");
-    this.context = t;
+import './dark-editable.css';var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+import { Popover } from "bootstrap";
+import moment$1 from "moment";
+class BaseMode {
+  constructor(context) {
+    if (this.constructor === BaseMode) {
+      throw new Error(`It's abstract class`);
+    }
+    this.context = context;
   }
   event_show() {
-    this.context.typeElement.hideError(), this.context.typeElement.element.value = this.context.value, this.context.element.dispatchEvent(new CustomEvent("show"));
+    this.context.typeElement.hideError();
+    this.context.typeElement.element.value = this.context.value;
+    this.context.element.dispatchEvent(new CustomEvent("show"));
   }
   event_shown() {
     this.context.element.dispatchEvent(new CustomEvent("shown"));
@@ -34,28 +37,34 @@ class c {
     throw new Error("Method `hide` not define!");
   }
 }
-class m extends c {
+class PopupMode extends BaseMode {
   init() {
-    this.popover = new u(this.context.element, {
+    this.popover = new Popover(this.context.element, {
       container: "body",
       content: this.context.typeElement.create(),
-      html: !0,
+      html: true,
       customClass: "dark-editable",
       title: this.context.title
-    }), this.context.element.addEventListener("show.bs.popover", () => {
+    });
+    this.context.element.addEventListener("show.bs.popover", () => {
       this.event_show();
-    }), this.context.element.addEventListener("shown.bs.popover", () => {
+    });
+    this.context.element.addEventListener("shown.bs.popover", () => {
       this.event_shown();
-    }), this.context.element.addEventListener("hide.bs.popover", () => {
+    });
+    this.context.element.addEventListener("hide.bs.popover", () => {
       this.event_hide();
-    }), this.context.element.addEventListener("hidden.bs.popover", () => {
+    });
+    this.context.element.addEventListener("hidden.bs.popover", () => {
       this.event_hidden();
-    }), document.addEventListener("click", (t) => {
-      const e = t.target;
-      if (e === this.popover.tip || e === this.context.element) return;
-      let s = e;
-      for (; s = s.parentNode; )
-        if (s === this.popover.tip) return;
+    });
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target === this.popover.tip || target === this.context.element) return;
+      let current = target;
+      while (current = current.parentNode) {
+        if (current === this.popover.tip) return;
+      }
       this.hide();
     });
   }
@@ -69,90 +78,152 @@ class m extends c {
     this.popover.hide();
   }
 }
-class x extends c {
+class InlineMode extends BaseMode {
   init() {
-    const t = () => {
+    const open = () => {
       if (!this.context.disabled) {
-        const e = this.context.typeElement.create();
-        this.event_show(), this.context.element.removeEventListener("click", t), this.context.element.innerHTML = "", this.context.element.append(e), this.event_shown();
+        const item = this.context.typeElement.create();
+        this.event_show();
+        this.context.element.removeEventListener("click", open);
+        this.context.element.innerHTML = "";
+        this.context.element.append(item);
+        this.event_shown();
       }
     };
-    this.context.element.addEventListener("click", t);
+    this.context.element.addEventListener("click", open);
   }
   enable() {
   }
   disable() {
   }
   hide() {
-    this.event_hide(), this.context.element.innerHTML = this.context.value, setTimeout(() => {
-      this.init(), this.event_hidden();
+    this.event_hide();
+    this.context.element.innerHTML = this.context.value;
+    setTimeout(() => {
+      this.init();
+      this.event_hidden();
     }, 100);
   }
 }
-class a {
-  constructor(t) {
-    i(this, "context", null);
-    i(this, "element", null);
-    i(this, "error", null);
-    i(this, "form", null);
-    i(this, "load", null);
-    i(this, "buttons", { success: null, cancel: null });
-    if (this.constructor === a)
-      throw new Error("It's abstract class");
-    this.context = t;
+class BaseType {
+  constructor(context) {
+    __publicField(this, "context", null);
+    __publicField(this, "element", null);
+    __publicField(this, "error", null);
+    __publicField(this, "form", null);
+    __publicField(this, "load", null);
+    __publicField(this, "buttons", { success: null, cancel: null });
+    if (this.constructor === BaseType) {
+      throw new Error(`It's abstract class`);
+    }
+    this.context = context;
   }
   create() {
     throw new Error("Method `create` not define!");
   }
-  createContainer(t) {
-    const e = document.createElement("div");
-    return this.element = t, this.error = this.createContainerError(), this.form = this.createContainerForm(), this.load = this.createContainerLoad(), this.form.append(t, this.load), this.buttons.success = null, this.buttons.cancel = null, this.context.showbuttons && (this.buttons.success = this.createButtonSuccess(), this.buttons.cancel = this.createButtonCancel(), this.form.append(this.buttons.success, this.buttons.cancel)), e.append(this.error, this.form), e;
+  createContainer(element) {
+    const div = document.createElement(`div`);
+    this.element = element;
+    this.error = this.createContainerError();
+    this.form = this.createContainerForm();
+    this.load = this.createContainerLoad();
+    this.form.append(element, this.load);
+    this.buttons.success = null;
+    this.buttons.cancel = null;
+    if (this.context.showbuttons) {
+      this.buttons.success = this.createButtonSuccess();
+      this.buttons.cancel = this.createButtonCancel();
+      this.form.append(this.buttons.success, this.buttons.cancel);
+    }
+    div.append(this.error, this.form);
+    return div;
   }
   createContainerError() {
-    const t = document.createElement("div");
-    return t.classList.add("text-danger", "fst-italic", "mb-2", "fw-bold"), t.style.display = "none", t;
+    const div = document.createElement(`div`);
+    div.classList.add("text-danger", "fst-italic", "mb-2", "fw-bold");
+    div.style.display = "none";
+    return div;
   }
   createContainerForm() {
-    const t = document.createElement("form");
-    return t.classList.add("d-flex", "align-items-start"), t.style.gap = "20px", t.addEventListener("submit", async (e) => {
+    const form = document.createElement(`form`);
+    form.classList.add("d-flex", "align-items-start");
+    form.style.gap = "20px";
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const s = this.getValue();
-      if (this.context.send && this.context.pk && this.context.url && this.context.value !== s) {
+      const newValue = this.getValue();
+      if (this.context.send && this.context.pk && this.context.url && this.context.value !== newValue) {
         this.showLoad();
-        let n;
+        let msg;
         try {
-          const r = await this.ajax(s);
-          r.ok ? n = await this.context.success(r, s) : n = await this.context.error(r, s) || `${r.status} ${r.statusText}`;
-        } catch (r) {
-          console.error(r), n = r;
+          const response = await this.ajax(newValue);
+          if (response.ok) {
+            msg = await this.context.success(response, newValue);
+          } else {
+            msg = await this.context.error(response, newValue) || `${response.status} ${response.statusText}`;
+          }
+        } catch (error) {
+          console.error(error);
+          msg = error;
         }
-        n ? (this.setError(n), this.showError()) : (this.setError(null), this.hideError(), this.context.value = this.getValue(), this.context.modeElement.hide(), this.initText()), this.hideLoad();
-      } else
-        this.context.value = this.getValue(), this.context.modeElement.hide(), this.initText();
+        if (msg) {
+          this.setError(msg);
+          this.showError();
+        } else {
+          this.setError(null);
+          this.hideError();
+          this.context.value = this.getValue();
+          this.context.modeElement.hide();
+          this.initText();
+        }
+        this.hideLoad();
+      } else {
+        this.context.value = this.getValue();
+        this.context.modeElement.hide();
+        this.initText();
+      }
       this.context.element.dispatchEvent(new CustomEvent("save"));
-    }), t;
+    });
+    return form;
   }
   createContainerLoad() {
-    const t = document.createElement("div");
-    t.style.display = "none", t.style.position = "absolute", t.style.background = "white", t.style.width = "100%", t.style.height = "100%", t.style.top = 0, t.style.left = 0;
-    const e = document.createElement("div");
-    return e.classList.add("dark-editable-loader"), t.append(e), t;
+    const div = document.createElement(`div`);
+    div.style.display = "none";
+    div.style.position = "absolute";
+    div.style.background = "white";
+    div.style.width = "100%";
+    div.style.height = "100%";
+    div.style.top = 0;
+    div.style.left = 0;
+    const loader = document.createElement(`div`);
+    loader.classList.add("dark-editable-loader");
+    div.append(loader);
+    return div;
   }
   createButton() {
-    const t = document.createElement("button");
-    return t.type = "button", t.classList.add("btn", "btn-sm"), t.style.color = "transparent", t.style.textShadow = "0 0 0 white", t;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("btn", "btn-sm");
+    button.style.color = "transparent";
+    button.style.textShadow = "0 0 0 white";
+    return button;
   }
   createButtonSuccess() {
-    const t = this.createButton();
-    return t.type = "submit", t.classList.add("btn-success"), t.innerHTML = "✔", t;
+    const btn_success = this.createButton();
+    btn_success.type = "submit";
+    btn_success.classList.add("btn-success");
+    btn_success.innerHTML = "✔";
+    return btn_success;
   }
   createButtonCancel() {
-    const t = this.createButton();
-    t.classList.add("btn-danger");
-    const e = document.createElement("div");
-    return e.innerHTML = "✖", t.append(e), t.addEventListener("click", () => {
+    const btn_cancel = this.createButton();
+    btn_cancel.classList.add("btn-danger");
+    const div = document.createElement("div");
+    div.innerHTML = "✖";
+    btn_cancel.append(div);
+    btn_cancel.addEventListener("click", () => {
       this.context.modeElement.hide();
-    }), t;
+    });
+    return btn_cancel;
   }
   hideLoad() {
     this.load.style.display = "none";
@@ -160,39 +231,63 @@ class a {
   showLoad() {
     this.load.style.display = "block";
   }
-  ajax(t) {
-    let e = this.context.url;
-    const s = new FormData();
-    s.append("pk", this.context.pk), s.append("name", this.context.name), s.append("value", t);
-    const n = {};
-    return n.method = this.context.ajaxOptions.method, n.method === "POST" ? n.body = s : e += "?" + new URLSearchParams(s).toString(), fetch(e, n);
+  ajax(new_value) {
+    let url = this.context.url;
+    const form = new FormData();
+    form.append("pk", this.context.pk);
+    form.append("name", this.context.name);
+    form.append("value", new_value);
+    const option = {};
+    option.method = this.context.ajaxOptions.method;
+    if (option.method === "POST") {
+      option.body = form;
+    } else {
+      url += "?" + new URLSearchParams(form).toString();
+    }
+    return fetch(url, option);
   }
-  async successResponse(t, e) {
+  async successResponse(response, newValue) {
   }
-  async errorResponse(t, e) {
+  async errorResponse(response, newValue) {
   }
-  setError(t) {
-    this.error.innerHTML = t;
+  setError(errorMsg) {
+    this.error.innerHTML = errorMsg;
   }
   showError() {
     this.error.style.display = "block";
   }
   hideError() {
-    this.error && (this.error.style.display = "none");
+    if (this.error) {
+      this.error.style.display = "none";
+    }
   }
-  createElement(t) {
-    const e = document.createElement(t);
-    return e.classList.add("form-control"), this.context.required && (e.required = this.context.required), this.context.showbuttons || e.addEventListener("change", () => {
-      this.form.dispatchEvent(new Event("submit"));
-    }), this.add_focus(e), e;
+  createElement(name) {
+    const element = document.createElement(name);
+    element.classList.add("form-control");
+    if (this.context.required) {
+      element.required = this.context.required;
+    }
+    if (!this.context.showbuttons) {
+      element.addEventListener("change", () => {
+        this.form.dispatchEvent(new Event("submit"));
+      });
+    }
+    this.add_focus(element);
+    return element;
   }
-  add_focus(t) {
+  add_focus(element) {
     this.context.element.addEventListener("shown", function() {
-      t.focus();
+      element.focus();
     });
   }
   initText() {
-    return this.context.value === "" ? (this.context.element.innerHTML = this.context.emptytext, !0) : (this.context.element.innerHTML = this.context.value, !1);
+    if (this.context.value === "") {
+      this.context.element.innerHTML = this.context.emptytext;
+      return true;
+    } else {
+      this.context.element.innerHTML = this.context.value;
+      return false;
+    }
   }
   initOptions() {
   }
@@ -200,94 +295,160 @@ class a {
     return this.element.value;
   }
 }
-class v extends a {
+class InputType extends BaseType {
   create() {
-    const t = this.createElement("input");
-    return t.type = this.context.type, this.createContainer(t);
+    const input = this.createElement(`input`);
+    input.type = this.context.type;
+    return this.createContainer(input);
   }
 }
-class f extends a {
+class TextAreaType extends BaseType {
   create() {
-    const t = this.createElement("textarea");
-    return this.createContainer(t);
+    const textarea = this.createElement(`textarea`);
+    return this.createContainer(textarea);
   }
 }
-class E extends a {
+class SelectType extends BaseType {
   create() {
-    const t = this.createElement("select");
-    return this.context.source.forEach((e) => {
-      const s = document.createElement("option");
-      s.value = e.value, s.innerHTML = e.text, t.append(s);
-    }), this.createContainer(t);
+    const select = this.createElement(`select`);
+    this.context.source.forEach((item) => {
+      const opt = document.createElement(`option`);
+      opt.value = item.value;
+      opt.innerHTML = item.text;
+      select.append(opt);
+    });
+    return this.createContainer(select);
   }
   initText() {
-    if (this.context.element.innerHTML = this.context.emptytext, this.context.value !== "" && this.context.source.length > 0)
-      for (const t in this.context.source) {
-        const e = this.context.source[t];
-        if (e.value == this.context.value)
-          return this.context.element.innerHTML = e.text, !1;
+    this.context.element.innerHTML = this.context.emptytext;
+    if (this.context.value !== "" && this.context.source.length > 0) {
+      for (const key in this.context.source) {
+        const item = this.context.source[key];
+        if (item.value == this.context.value) {
+          this.context.element.innerHTML = item.text;
+          return false;
+        }
       }
-    return !0;
+    }
+    return true;
   }
   initOptions() {
-    this.context.get_opt("source", []), typeof this.context.source == "string" && this.context.source !== "" && (this.context.source = JSON.parse(this.context.source));
+    this.context.get_opt("source", []);
+    if (typeof this.context.source === "string" && this.context.source !== "") {
+      this.context.source = JSON.parse(this.context.source);
+    }
   }
 }
-class h extends a {
+class DateType extends BaseType {
   create() {
-    const t = this.createElement("input");
-    return t.type = "date", this.createContainer(t);
+    const input = this.createElement(`input`);
+    input.type = "date";
+    return this.createContainer(input);
   }
   initText() {
-    return this.value === "" ? (this.context.element.innerHTML = this.context.emptytext, !0) : (this.context.element.innerHTML = moment(this.context.value).format(this.context.viewformat), !1);
+    if (this.value === "") {
+      this.context.element.innerHTML = this.context.emptytext;
+      return true;
+    } else {
+      this.context.element.innerHTML = moment(this.context.value).format(this.context.viewformat);
+      return false;
+    }
   }
   initOptions() {
-    this.context.get_opt("format", "YYYY-MM-DD"), this.context.get_opt("viewformat", "YYYY-MM-DD");
+    this.context.get_opt("format", "YYYY-MM-DD");
+    this.context.get_opt("viewformat", "YYYY-MM-DD");
   }
 }
-class y extends h {
+class DateTimeType extends DateType {
   create() {
-    const t = this.createElement("input");
-    return t.type = "datetime-local", this.createContainer(t);
+    const input = this.createElement(`input`);
+    input.type = "datetime-local";
+    return this.createContainer(input);
   }
   initOptions() {
-    this.context.get_opt("format", "YYYY-MM-DD HH:mm"), this.context.get_opt("viewformat", "YYYY-MM-DD HH:mm"), this.context.value = p(this.context.value).format("YYYY-MM-DDTHH:mm");
+    this.context.get_opt("format", "YYYY-MM-DD HH:mm");
+    this.context.get_opt("viewformat", "YYYY-MM-DD HH:mm");
+    this.context.value = moment$1(this.context.value).format("YYYY-MM-DDTHH:mm");
   }
 }
 /*!
  * DarkEditable.js
  * License: MIT
  */
-class L {
-  constructor(t, e = {}) {
-    i(this, "modeElement", null);
-    i(this, "typeElement", null);
-    i(this, "mode", null);
-    i(this, "type", null);
-    i(this, "emptytext", null);
-    i(this, "viewformat", null);
-    i(this, "pk", null);
-    i(this, "name", null);
-    this.element = t, this.options = e, this.init_options(), this.typeElement = this.route_type(), this.typeElement.initOptions(), this.modeElement = this.route_mode(), this.modeElement.init(), this.init_text(), this.init_style(), this.disabled && this.disable(), this.element.dispatchEvent(new CustomEvent("init"));
+class DarkEditable {
+  constructor(element, options = {}) {
+    __publicField(this, "modeElement", null);
+    __publicField(this, "typeElement", null);
+    __publicField(this, "mode", null);
+    __publicField(this, "type", null);
+    __publicField(this, "emptytext", null);
+    __publicField(this, "viewformat", null);
+    __publicField(this, "pk", null);
+    __publicField(this, "name", null);
+    this.element = element;
+    this.options = options;
+    this.init_options();
+    this.typeElement = this.route_type();
+    this.typeElement.initOptions();
+    this.modeElement = this.route_mode();
+    this.modeElement.init();
+    this.init_text();
+    this.init_style();
+    if (this.disabled) {
+      this.disable();
+    }
+    this.element.dispatchEvent(new CustomEvent("init"));
   }
   /* INIT METHODS */
-  get_opt(t, e) {
-    var s, n;
-    return this[t] = ((s = this.element.dataset) == null ? void 0 : s[t]) ?? ((n = this.options) == null ? void 0 : n[t]) ?? e;
+  get_opt(name, default_value) {
+    var _a, _b;
+    return this[name] = ((_a = this.element.dataset) == null ? void 0 : _a[name]) ?? ((_b = this.options) == null ? void 0 : _b[name]) ?? default_value;
   }
-  get_opt_bool(t, e) {
-    return this.get_opt(t, e), typeof this[t] != "boolean" && (this[t] === "true" ? this[t] = !0 : this[t] === "false" ? this[t] = !1 : this[t] = e), this[t];
+  get_opt_bool(name, default_value) {
+    this.get_opt(name, default_value);
+    if (typeof this[name] !== "boolean") {
+      if (this[name] === "true") {
+        this[name] = true;
+      } else if (this[name] === "false") {
+        this[name] = false;
+      } else {
+        this[name] = default_value;
+      }
+    }
+    return this[name];
   }
   init_options() {
-    var t, e, s, n;
-    this.get_opt("value", this.element.innerHTML), this.get_opt("name", this.element.id), this.get_opt("pk", null), this.get_opt("title", ""), this.get_opt("type", "text"), this.get_opt("emptytext", "Empty"), this.get_opt("mode", "popup"), this.get_opt("url", null), this.get_opt("ajaxOptions", {}), this.ajaxOptions = Object.assign({
+    var _a, _b, _c, _d;
+    this.get_opt("value", this.element.innerHTML);
+    this.get_opt("name", this.element.id);
+    this.get_opt("pk", null);
+    this.get_opt("title", "");
+    this.get_opt("type", "text");
+    this.get_opt("emptytext", "Empty");
+    this.get_opt("mode", "popup");
+    this.get_opt("url", null);
+    this.get_opt("ajaxOptions", {});
+    this.ajaxOptions = Object.assign({
       method: "POST",
       dataType: "text"
-    }, this.ajaxOptions), this.get_opt_bool("send", !0), this.get_opt_bool("disabled", !1), this.get_opt_bool("required", !1), this.get_opt_bool("showbuttons", !0), (t = this.options) != null && t.success && typeof ((e = this.options) == null ? void 0 : e.success) == "function" && (this.success = this.options.success), (s = this.options) != null && s.error && typeof ((n = this.options) == null ? void 0 : n.error) == "function" && (this.error = this.options.error);
+    }, this.ajaxOptions);
+    this.get_opt_bool("send", true);
+    this.get_opt_bool("disabled", false);
+    this.get_opt_bool("required", false);
+    this.get_opt_bool("showbuttons", true);
+    if (((_a = this.options) == null ? void 0 : _a.success) && typeof ((_b = this.options) == null ? void 0 : _b.success) == "function") {
+      this.success = this.options.success;
+    }
+    if (((_c = this.options) == null ? void 0 : _c.error) && typeof ((_d = this.options) == null ? void 0 : _d.error) == "function") {
+      this.error = this.options.error;
+    }
   }
   init_text() {
-    const t = "dark-editable-element-empty";
-    this.element.classList.remove(t), this.typeElement.initText() && this.element.classList.add(t);
+    const empty_class = "dark-editable-element-empty";
+    this.element.classList.remove(empty_class);
+    if (this.typeElement.initText()) {
+      this.element.classList.add(empty_class);
+    }
   }
   init_style() {
     this.element.classList.add("dark-editable-element");
@@ -298,15 +459,16 @@ class L {
       default:
         throw new Error(`Mode ${this.mode} not found!`);
       case "popup":
-        return new m(this);
+        return new PopupMode(this);
       case "inline":
-        return new x(this);
+        return new InlineMode(this);
     }
   }
   route_type() {
-    if (this.type.prototype instanceof a)
+    if (this.type.prototype instanceof BaseType) {
       return new this.type(this);
-    if (typeof this.type == "string")
+    }
+    if (typeof this.type === "string") {
       switch (this.type) {
         case "text":
         case "password":
@@ -316,35 +478,41 @@ class L {
         case "number":
         case "range":
         case "time":
-          return new v(this);
+          return new InputType(this);
         case "textarea":
-          return new f(this);
+          return new TextAreaType(this);
         case "select":
-          return new E(this);
+          return new SelectType(this);
         case "date":
-          return new h(this);
+          return new DateType(this);
         case "datetime":
-          return new y(this);
+          return new DateTimeType(this);
       }
-    throw new Error("Undefined type");
+    }
+    throw new Error(`Undefined type`);
   }
   /* AJAX */
-  async success(t, e) {
-    return await this.typeElement.successResponse(t, e);
+  async success(response, newValue) {
+    return await this.typeElement.successResponse(response, newValue);
   }
-  async error(t, e) {
-    return await this.typeElement.errorResponse(t, e);
+  async error(response, newValue) {
+    return await this.typeElement.errorResponse(response, newValue);
   }
   /* AJAX END */
   /* METHODS */
   enable() {
-    this.disabled = !1, this.element.classList.remove("dark-editable-element-disabled"), this.modeElement.enable();
+    this.disabled = false;
+    this.element.classList.remove("dark-editable-element-disabled");
+    this.modeElement.enable();
   }
   disable() {
-    this.disabled = !0, this.element.classList.add("dark-editable-element-disabled"), this.modeElement.enable();
+    this.disabled = true;
+    this.element.classList.add("dark-editable-element-disabled");
+    this.modeElement.enable();
   }
-  setValue(t) {
-    this.value = t, this.init_text();
+  setValue(value) {
+    this.value = value;
+    this.init_text();
   }
   getValue() {
     return this.value;
@@ -352,6 +520,6 @@ class L {
   /* METHODS END */
 }
 export {
-  L as default
+  DarkEditable as default
 };
 //# sourceMappingURL=dark-editable.js.map
