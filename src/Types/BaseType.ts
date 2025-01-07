@@ -1,22 +1,28 @@
+import DarkEditable from "../dark-editable.ts";
+import BaseTypeButtons from "../Interfaces/BaseTypeButtons.ts";
+
 export default class BaseType{
-    context = null;
-    element = null;
-    error = null;
-    form = null;
-    load = null;
-    buttons = {success: null, cancel: null};
-    constructor(context) {
+    context: DarkEditable;
+    element: HTMLInputElement|null = null;
+    error: HTMLElement|null = null;
+    form: HTMLElement|null = null;
+    load: HTMLElement|null  = null;
+    buttons: BaseTypeButtons = {success: null, cancel: null};
+
+    constructor(context: DarkEditable) {
         if(this.constructor === BaseType){
             throw new Error(`It's abstract class`);
         }
         this.context = context;
     }
 
-    create(){
+    create(): HTMLElement
+    {
         throw new Error('Method `create` not define!');
     }
 
-    createContainer(element){
+    createContainer(element: HTMLInputElement): HTMLDivElement
+    {
         const div = document.createElement(`div`);
         this.element = element;
         this.error = this.createContainerError();
@@ -25,7 +31,7 @@ export default class BaseType{
         this.form.append(element, this.load);
         this.buttons.success = null;
         this.buttons.cancel = null;
-        if(this.context.showbuttons){
+        if(this.context.options.showbuttons){
             this.buttons.success = this.createButtonSuccess();
             this.buttons.cancel = this.createButtonCancel();
             this.form.append(this.buttons.success, this.buttons.cancel);
@@ -35,21 +41,23 @@ export default class BaseType{
         return div;
     }
 
-    createContainerError(){
+    createContainerError(): HTMLDivElement
+    {
         const div = document.createElement(`div`);
         div.classList.add("text-danger", "fst-italic", "mb-2", "fw-bold");
         div.style.display = "none";
         return div;
     }
 
-    createContainerForm(){
+    createContainerForm(): HTMLFormElement
+    {
         const form = document.createElement(`form`);
         form.classList.add("d-flex", "align-items-start");
         form.style.gap = "20px";
         form.addEventListener('submit', async e => {
             e.preventDefault();
             const newValue = this.getValue();
-            if(this.context.send && this.context.pk && this.context.url && (this.context.value !== newValue)){
+            if(this.context.options.send && this.context.options.pk && this.context.options.url && (this.context.value !== newValue)){
                 this.showLoad();
                 let msg;
                 try {
@@ -68,7 +76,7 @@ export default class BaseType{
                     this.setError(msg);
                     this.showError();
                 } else {
-                    this.setError(null);
+                    this.setError('');
                     this.hideError();
                     this.context.value = this.getValue();
                     this.context.modeElement.hide();
@@ -85,22 +93,24 @@ export default class BaseType{
         return form;
     }
 
-    createContainerLoad(){
+    createContainerLoad(): HTMLDivElement
+    {
         const div = document.createElement(`div`);
         div.style.display = "none";
         div.style.position = "absolute";
         div.style.background = "white";
         div.style.width = "100%";
         div.style.height = "100%";
-        div.style.top = 0;
-        div.style.left = 0;
+        div.style.top = '0';
+        div.style.left = '0';
         const loader = document.createElement(`div`);
         loader.classList.add("dark-editable-loader");
         div.append(loader);
         return div;
     }
 
-    createButton(){
+    createButton(): HTMLButtonElement
+    {
         const button = document.createElement("button");
         button.type = "button";
         button.classList.add("btn", "btn-sm");
@@ -109,7 +119,8 @@ export default class BaseType{
         return button;
     }
 
-    createButtonSuccess(){
+    createButtonSuccess(): HTMLButtonElement
+    {
         const btn_success = this.createButton();
         btn_success.type = "submit";
         btn_success.classList.add("btn-success");
@@ -117,7 +128,8 @@ export default class BaseType{
         return btn_success;
     }
 
-    createButtonCancel(){
+    createButtonCancel(): HTMLButtonElement
+    {
         const btn_cancel = this.createButton();
         btn_cancel.classList.add("btn-danger");
         const div = document.createElement("div");
@@ -129,76 +141,105 @@ export default class BaseType{
         return btn_cancel;
     }
 
-    hideLoad(){
-        this.load.style.display = "none";
-    }
-
-    showLoad(){
-        this.load.style.display = "block";
-    }
-
-    ajax(new_value){
-        let url = this.context.url;
-        const form = new FormData;
-        form.append("pk", this.context.pk);
-        form.append("name", this.context.name);
-        form.append("value", new_value);
-        const option = {};
-        option.method = this.context.ajaxOptions.method;
-        if(option.method === "POST"){
-            option.body = form;
-        } else {
-            url += "?" + new URLSearchParams(form).toString();
+    hideLoad(): void
+    {
+        if(this.load){
+            this.load.style.display = "none";
         }
-        return fetch(url, option);
     }
 
-    async successResponse(response, newValue){
+    showLoad(): void
+    {
+        if(this.load){
+            this.load.style.display = "block";
+        }
+    }
+
+    ajax(new_value: any): Promise<Response>
+    {
+        let url = this.context.options.url;
+        if(!url){
+            throw new Error("URL is required!");
+        }
+        if(!this.context.options.pk){
+            throw new Error("pk is required!");
+        }
+        if(!this.context.options.name){
+            throw new Error("Name is required!");
+        }
+        const form = new FormData;
+        form.append("pk", this.context.options.pk);
+        form.append("name", this.context.options.name);
+        form.append("value", new_value);
+        if(this.context.options.ajaxOptions?.method === "GET"){
+            url += "?";
+            form.forEach((value, key) => {
+                url += `${key}=${value}`;
+            });
+        }
+        return fetch(url, this.context.options.ajaxOptions);
+    }
+
+    async successResponse(_response: Response, _newValue: string): Promise<any>
+    {
 
     }
 
-    async errorResponse(response, newValue){
+    async errorResponse(_response: Response, _newValue: string): Promise<any>
+    {
 
     }
 
-    setError(errorMsg){
-        this.error.innerHTML = errorMsg;
+    setError(errorMsg: string): void
+    {
+        if(this.error){
+            this.error.innerHTML = errorMsg;
+        }
     }
 
-    showError(){
-        this.error.style.display = "block";
+    showError(): void
+    {
+        if(this.error){
+            this.error.style.display = "block";
+        }
     }
 
-    hideError(){
+    hideError(): void
+    {
         if(this.error){
             this.error.style.display = "none";
         }
     }
 
-    createElement(name){
-        const element = document.createElement(name);
+    createElement(name: string): HTMLInputElement
+    {
+        const element = <HTMLInputElement>document.createElement(name);
         element.classList.add("form-control");
-        if(this.context.required){
-            element.required = this.context.required;
+        if(this.context.options.required){
+            element.required = this.context.options.required;
         }
-        if(!this.context.showbuttons){
+        if(!this.context.options.showbuttons){
             element.addEventListener('change', () => {
-                this.form.dispatchEvent(new Event('submit'));
+                if(this.form){
+                    this.form.dispatchEvent(new Event('submit'));
+                }
             });
         }
         this.add_focus(element);
         return element;
     }
 
-    add_focus(element){
+    add_focus(element: HTMLInputElement): void
+    {
         this.context.element.addEventListener('shown', function(){
             element.focus();
         });
     }
 
-    initText(){
+    initText(): boolean
+    {
         if(this.context.value === ""){
-            this.context.element.innerHTML = this.context.emptytext;
+            this.context.element.innerHTML = this.context.options.emptytext || "";
             return true;
         } else {
             this.context.element.innerHTML = this.context.value;
@@ -206,11 +247,13 @@ export default class BaseType{
         }
     }
 
-    initOptions(){
+    initOptions(): void
+    {
 
     }
 
-    getValue(){
-        return this.element.value;
+    getValue(): string
+    {
+        return this.element ? this.element.value : '';
     }
 }

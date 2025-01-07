@@ -2,13 +2,16 @@ import { Popover } from "bootstrap";
 import BaseMode from "./BaseMode.js";
 
 export default class PopupMode extends BaseMode{
+
+    popover: Popover|null = null;
+
     init(){
         this.popover = new Popover(this.context.element, {
             container: "body",
             content: this.context.typeElement.create(),
             html: true,
             customClass: "dark-editable",
-            title: this.context.title,
+            title: this.context.options.title,
         });
         this.context.element.addEventListener('show.bs.popover', () => {
             this.event_show();
@@ -24,22 +27,34 @@ export default class PopupMode extends BaseMode{
         });
 
         document.addEventListener('click', (e) => {
-            const target = e.target;
-            if(target === this.popover.tip || target === this.context.element) return;
-            let current = target;
-            while(current = current.parentNode){
+            const target = <HTMLElement>e.target;
+            // @ts-ignore
+            if(this.popover && target === this.popover.tip || target === this.context.element) return;
+            let current = target.parentNode;
+            while(current){
+                // @ts-ignore
                 if(current === this.popover.tip) return;
+                current = current.parentNode;
             }
             this.hide();
         })
     }
-    enable(){
-        this.popover.enable();
+    enable(): void
+    {
+        if(this.popover){
+            this.popover.enable();
+        }
     }
-    disable(){
-        this.popover.disable();
+    disable(): void
+    {
+        if(this.popover){
+            this.popover.disable();
+        }
     }
-    hide(){
-        this.popover.hide();
+    hide(): void
+    {
+        if(this.popover){
+            this.popover.hide();
+        }
     }
 }

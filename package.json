@@ -8,28 +8,29 @@
     "dist",
     "src"
   ],
-  "main": "./dist/dark-editable.umd.cjs",
-  "module": "./dist/dark-editable.js",
+  "main": "./dist/dark-editable.js",
+  "types": "./dist/dark-editable.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/dark-editable.js",
-      "require": "./dist/dark-editable.umd.cjs"
-    }
+    "import": "./dist/dark-editable.js",
+    "require": "./dist/dark-editable.umd.cjs"
   },
   "peerDependencies": {
     "bootstrap": "^5.3",
     "moment": "^2.30.1"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "typescript": "^5.7.2",
     "vite": "^6.0.7",
+    "vite-plugin-dts": "^4.4.0",
     "vite-plugin-lib-inject-css": "^2.2.1"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "version": "1.4.7",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DarKsandr/dark-editable.git"

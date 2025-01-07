@@ -1,5 +1,9 @@
+import DarkEditable from "../dark-editable.ts";
+
 export default class BaseMode{
-    constructor(context) {
+    context: DarkEditable;
+
+    constructor(context: DarkEditable) {
         if(this.constructor === BaseMode){
             throw new Error(`It's abstract class`);
         }
@@ -7,6 +11,9 @@ export default class BaseMode{
     }
     event_show(){
         this.context.typeElement.hideError();
+        if(!this.context.typeElement.element){
+            throw new Error("Element is missing!");
+        }
         this.context.typeElement.element.value = this.context.value;
         this.context.element.dispatchEvent(new CustomEvent("show"));
     }

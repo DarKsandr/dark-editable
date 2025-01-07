@@ -9,7 +9,8 @@ export default class DateTimeType extends DateType{
         return this.createContainer(input);
     }
 
-    initOptions(){
+    initOptions(): void
+    {
         this.context.get_opt("format", "YYYY-MM-DD HH:mm");
         this.context.get_opt("viewformat", "YYYY-MM-DD HH:mm");
         this.context.value = moment(this.context.value).format("YYYY-MM-DDTHH:mm");
