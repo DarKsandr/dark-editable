@@ -24,19 +24,16 @@ Required
 
 2. Download corresponding dark-editable build and include it on your page:
     ```
-    <link rel="stylesheet" href="dark-editable.css"> 
     <script src="dark-editable.js"></script>
     ```
 
     If you can import then use:
     ```
     dist/dark-editable.js
-    dist/dark-editable.css
     ```
     If you just want to connect globally to the page then use:
     ```
     dist/dark-editable.iife.js
-    dist/dark-editable.css
     ```
 
 3. Markup elements that should be editable. Usually it is ```<A>``` element with additional ```data-*``` attributes

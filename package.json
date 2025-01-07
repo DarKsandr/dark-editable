@@ -14,8 +14,7 @@
     ".": {
       "import": "./dist/dark-editable.js",
       "require": "./dist/dark-editable.umd.cjs"
-    },
-    "./dark-editable.css": "./dist/dark-editable.css"
+    }
   },
   "peerDependencies": {
     "bootstrap": "^5.3",
@@ -30,7 +29,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "version": "1.4.5",
+  "version": "1.4.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DarKsandr/dark-editable.git"
