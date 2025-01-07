@@ -1,7 +1,7 @@
-import './dark-editable.css';var d = Object.defineProperty;
-var u = (o, t, e) => t in o ? d(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var i = (o, t, e) => u(o, typeof t != "symbol" ? t + "" : t, e);
-import { Popover as m } from "bootstrap";
+import './dark-editable.css';var u = Object.defineProperty;
+var m = (o, t, e) => t in o ? u(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var i = (o, t, e) => m(o, typeof t != "symbol" ? t + "" : t, e);
+import { Popover as x } from "bootstrap";
 import c from "moment";
 class a {
   constructor(t) {
@@ -37,13 +37,13 @@ class a {
     throw new Error("Method `hide` not define!");
   }
 }
-class x extends a {
+class f extends a {
   constructor() {
     super(...arguments);
     i(this, "popover", null);
   }
   init() {
-    this.popover = new m(this.context.element, {
+    this.popover = new x(this.context.element, {
       container: "body",
       content: this.context.typeElement.create(),
       html: !0,
@@ -78,7 +78,7 @@ class x extends a {
     this.popover && this.popover.hide();
   }
 }
-class f extends a {
+class v extends a {
   init() {
     const t = () => {
       if (!this.context.options.disabled) {
@@ -179,9 +179,13 @@ class h {
     if (!this.context.options.name)
       throw new Error("Name is required!");
     const s = new FormData();
-    return s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((n = this.context.options.ajaxOptions) == null ? void 0 : n.method) === "GET" && (e += "?", s.forEach((r, p) => {
-      e += `${p}=${r}`;
-    })), fetch(e, this.context.options.ajaxOptions);
+    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((n = this.context.options.ajaxOptions) == null ? void 0 : n.method) === "GET") {
+      const r = [];
+      s.forEach((p, d) => {
+        r.push(`${d}=${p}`);
+      }), e += "?" + r.join("&");
+    }
+    return fetch(e, this.context.options.ajaxOptions);
   }
   async successResponse(t, e) {
   }
@@ -216,19 +220,19 @@ class h {
     return this.element ? this.element.value : "";
   }
 }
-class v extends h {
+class E extends h {
   create() {
     const t = this.createElement("input");
     return t.type = typeof this.context.options.type == "string" ? this.context.options.type : "text", this.createContainer(t);
   }
 }
-class E extends h {
+class w extends h {
   create() {
     const t = this.createElement("textarea");
     return this.createContainer(t);
   }
 }
-class w extends h {
+class y extends h {
   create() {
     const t = this.createElement("select");
     return this.context.options.source && Array.isArray(this.context.options.source) && this.context.options.source.forEach((e) => {
@@ -261,7 +265,7 @@ class l extends h {
     this.context.get_opt("format", "YYYY-MM-DD"), this.context.get_opt("viewformat", "YYYY-MM-DD");
   }
 }
-class y extends l {
+class b extends l {
   create() {
     const t = this.createElement("input");
     return t.type = "datetime-local", this.createContainer(t);
@@ -274,7 +278,7 @@ class y extends l {
  * DarkEditable.js
  * License: MIT
  */
-class L {
+class T {
   constructor(t, e = {}) {
     i(this, "element");
     i(this, "options");
@@ -321,9 +325,9 @@ class L {
       default:
         throw new Error(`Mode ${this.options.mode} not found!`);
       case "popup":
-        return new x(this);
-      case "inline":
         return new f(this);
+      case "inline":
+        return new v(this);
     }
   }
   route_type() {
@@ -338,15 +342,15 @@ class L {
       case "number":
       case "range":
       case "time":
-        return new v(this);
-      case "textarea":
         return new E(this);
-      case "select":
+      case "textarea":
         return new w(this);
+      case "select":
+        return new y(this);
       case "date":
         return new l(this);
       case "datetime":
-        return new y(this);
+        return new b(this);
     }
     throw new Error("Undefined type");
   }
@@ -374,6 +378,6 @@ class L {
   /* METHODS END */
 }
 export {
-  L as default
+  T as default
 };
 //# sourceMappingURL=dark-editable.js.map

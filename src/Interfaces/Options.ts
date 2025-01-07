@@ -14,8 +14,8 @@ export default interface Options {
     url?: string|null;
     required?: boolean;
     showbuttons?: boolean;
-    success?: (response: any, newValue: string|number) => Promise<any>;
-    error?: (response: any, newValue: string|number) => Promise<any>;
+    success?: (response: Response, newValue: string|number) => Promise<any>;
+    error?: (response: Response, newValue: string|number) => Promise<any>;
     //other
     viewformat?: string;
     source?: [{value: string, text: string}]|string;

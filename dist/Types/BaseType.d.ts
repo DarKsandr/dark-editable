@@ -18,7 +18,7 @@ export default class BaseType {
     createButtonCancel(): HTMLButtonElement;
     hideLoad(): void;
     showLoad(): void;
-    ajax(new_value: any): Promise<Response>;
+    ajax(new_value: string): Promise<Response>;
     successResponse(_response: Response, _newValue: string): Promise<any>;
     errorResponse(_response: Response, _newValue: string): Promise<any>;
     setError(errorMsg: string): void;

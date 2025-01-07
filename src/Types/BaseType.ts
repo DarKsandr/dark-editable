@@ -155,7 +155,7 @@ export default class BaseType{
         }
     }
 
-    ajax(new_value: any): Promise<Response>
+    ajax(new_value: string): Promise<Response>
     {
         let url = this.context.options.url;
         if(!url){
@@ -172,10 +172,11 @@ export default class BaseType{
         form.append("name", this.context.options.name);
         form.append("value", new_value);
         if(this.context.options.ajaxOptions?.method === "GET"){
-            url += "?";
+            const params: [string?] = [];
             form.forEach((value, key) => {
-                url += `${key}=${value}`;
+                params.push(`${key}=${value}`);
             });
+            url += "?" + params.join("&");
         }
         return fetch(url, this.context.options.ajaxOptions);
     }
