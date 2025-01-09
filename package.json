@@ -31,9 +31,6 @@
     "preview": "vite preview"
   },
   "version": "2.0.2",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/DarKsandr"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DarKsandr/dark-editable.git"
