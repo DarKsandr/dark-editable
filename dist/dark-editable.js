@@ -1,12 +1,12 @@
-import './dark-editable.css';var u = Object.defineProperty;
-var m = (o, t, e) => t in o ? u(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var i = (o, t, e) => m(o, typeof t != "symbol" ? t + "" : t, e);
-import { Popover as x } from "bootstrap";
-import c from "moment";
-class a {
+import './dark-editable.css';var m = Object.defineProperty;
+var x = (o, t, e) => t in o ? m(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var i = (o, t, e) => x(o, typeof t != "symbol" ? t + "" : t, e);
+import { Popover as f } from "bootstrap";
+import l from "moment";
+class h {
   constructor(t) {
     i(this, "context");
-    if (this.constructor === a)
+    if (this.constructor === h)
       throw new Error("It's abstract class");
     this.context = t;
   }
@@ -37,13 +37,13 @@ class a {
     throw new Error("Method `hide` not define!");
   }
 }
-class f extends a {
+class v extends h {
   constructor() {
     super(...arguments);
     i(this, "popover", null);
   }
   init() {
-    this.popover = new x(this.context.element, {
+    this.popover = new f(this.context.element, {
       container: "body",
       content: this.context.typeElement.create(),
       html: !0,
@@ -78,7 +78,7 @@ class f extends a {
     this.popover && this.popover.hide();
   }
 }
-class v extends a {
+class E extends h {
   init() {
     const t = () => {
       if (!this.context.options.disabled) {
@@ -98,7 +98,7 @@ class v extends a {
     }, 100);
   }
 }
-class h {
+class a {
   constructor(t) {
     i(this, "context");
     i(this, "element", null);
@@ -106,7 +106,7 @@ class h {
     i(this, "form", null);
     i(this, "load", null);
     i(this, "buttons", { success: null, cancel: null });
-    if (this.constructor === h)
+    if (this.constructor === a)
       throw new Error("It's abstract class");
     this.context = t;
   }
@@ -170,7 +170,7 @@ class h {
     this.load && (this.load.style.display = "block");
   }
   ajax(t) {
-    var n;
+    var r;
     let e = this.context.options.url;
     if (!e)
       throw new Error("URL is required!");
@@ -179,13 +179,14 @@ class h {
     if (!this.context.options.name)
       throw new Error("Name is required!");
     const s = new FormData();
-    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((n = this.context.options.ajaxOptions) == null ? void 0 : n.method) === "GET") {
-      const r = [];
-      s.forEach((p, d) => {
-        r.push(`${d}=${p}`);
-      }), e += "?" + r.join("&");
+    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((r = this.context.options.ajaxOptions) == null ? void 0 : r.method) === "GET") {
+      const c = [];
+      s.forEach((d, u) => {
+        c.push(`${u}=${d}`);
+      }), e += "?" + c.join("&");
     }
-    return fetch(e, this.context.options.ajaxOptions);
+    const n = { ...this.context.options.ajaxOptions };
+    return n.body = s, fetch(e, n);
   }
   async successResponse(t, e) {
   }
@@ -220,19 +221,19 @@ class h {
     return this.element ? this.element.value : "";
   }
 }
-class E extends h {
+class w extends a {
   create() {
     const t = this.createElement("input");
     return t.type = typeof this.context.options.type == "string" ? this.context.options.type : "text", this.createContainer(t);
   }
 }
-class w extends h {
+class y extends a {
   create() {
     const t = this.createElement("textarea");
     return this.createContainer(t);
   }
 }
-class y extends h {
+class b extends a {
   create() {
     const t = this.createElement("select");
     return this.context.options.source && Array.isArray(this.context.options.source) && this.context.options.source.forEach((e) => {
@@ -253,32 +254,32 @@ class y extends h {
     this.context.get_opt("source", []), this.context.options && typeof this.context.options.source == "string" && this.context.options.source !== "" && (this.context.options.source = JSON.parse(this.context.options.source));
   }
 }
-class l extends h {
+class p extends a {
   create() {
     const t = this.createElement("input");
     return t.type = "date", this.createContainer(t);
   }
   initText() {
-    return this.context.value === "" ? (this.context.element.innerHTML = this.context.options.emptytext || "", !0) : (this.context.element.innerHTML = c(this.context.value).format(this.context.options.viewformat), !1);
+    return this.context.value === "" ? (this.context.element.innerHTML = this.context.options.emptytext || "", !0) : (this.context.element.innerHTML = l(this.context.value).format(this.context.options.viewformat), !1);
   }
   initOptions() {
     this.context.get_opt("format", "YYYY-MM-DD"), this.context.get_opt("viewformat", "YYYY-MM-DD");
   }
 }
-class b extends l {
+class _ extends p {
   create() {
     const t = this.createElement("input");
     return t.type = "datetime-local", this.createContainer(t);
   }
   initOptions() {
-    this.context.get_opt("format", "YYYY-MM-DD HH:mm"), this.context.get_opt("viewformat", "YYYY-MM-DD HH:mm"), this.context.value = c(this.context.value).format("YYYY-MM-DDTHH:mm");
+    this.context.get_opt("format", "YYYY-MM-DD HH:mm"), this.context.get_opt("viewformat", "YYYY-MM-DD HH:mm"), this.context.value = l(this.context.value).format("YYYY-MM-DDTHH:mm");
   }
 }
 /*!
  * DarkEditable.js
  * License: MIT
  */
-class T {
+class M {
   constructor(t, e = {}) {
     i(this, "element");
     i(this, "options");
@@ -325,9 +326,9 @@ class T {
       default:
         throw new Error(`Mode ${this.options.mode} not found!`);
       case "popup":
-        return new f(this);
-      case "inline":
         return new v(this);
+      case "inline":
+        return new E(this);
     }
   }
   route_type() {
@@ -342,15 +343,15 @@ class T {
       case "number":
       case "range":
       case "time":
-        return new E(this);
-      case "textarea":
         return new w(this);
-      case "select":
+      case "textarea":
         return new y(this);
-      case "date":
-        return new l(this);
-      case "datetime":
+      case "select":
         return new b(this);
+      case "date":
+        return new p(this);
+      case "datetime":
+        return new _(this);
     }
     throw new Error("Undefined type");
   }
@@ -378,6 +379,6 @@ class T {
   /* METHODS END */
 }
 export {
-  T as default
+  M as default
 };
 //# sourceMappingURL=dark-editable.js.map

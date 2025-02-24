@@ -178,7 +178,10 @@ export default class BaseType{
             });
             url += "?" + params.join("&");
         }
-        return fetch(url, this.context.options.ajaxOptions);
+
+        const ajaxOptions = {...this.context.options.ajaxOptions};
+        ajaxOptions.body = form;
+        return fetch(url, ajaxOptions);
     }
 
     async successResponse(_response: Response, _newValue: string): Promise<any>
