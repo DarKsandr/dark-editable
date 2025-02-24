@@ -11,11 +11,11 @@ export default class DateType extends BaseType{
 
     initText(): boolean
     {
-        if(this.context.value === ""){
+        if(this.context.getValue() === ""){
             this.context.element.innerHTML = this.context.options.emptytext || "";
             return true;
         } else {
-            this.context.element.innerHTML = moment(this.context.value).format(this.context.options.viewformat);
+            this.context.element.innerHTML = moment(this.context.getValue()).format(this.context.options.viewformat);
             return false;
         }
     }

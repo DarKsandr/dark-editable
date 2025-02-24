@@ -17,10 +17,10 @@ export default class SelectType extends BaseType{
 
     initText(){
         this.context.element.innerHTML = this.context.options.emptytext || "";
-        if(this.context.value !== "" && this.context.options.source && Array.isArray(this.context.options.source) && this.context.options.source.length > 0){
+        if(this.context.getValue() !== "" && this.context.options.source && Array.isArray(this.context.options.source) && this.context.options.source.length > 0){
             for(let i = 0; i < this.context.options.source.length; i++){
                 const item = this.context.options.source[ i ];
-                if( item.value == this.context.value){
+                if( item.value == this.context.getValue()){
                     this.context.element.innerHTML = item.text;
                     return false;
                 }

@@ -20,7 +20,6 @@ export default class DarkEditable{
 
     typeElement: BaseType;
     modeElement: BaseMode;
-    value: string = '';
 
     constructor(element: HTMLElement, options: Options = {}) {
         this.element = element;
@@ -181,13 +180,13 @@ export default class DarkEditable{
 
     setValue(value: string): void
     {
-        this.value = value;
+        this.options.value = value;
         this.init_text();
     }
 
     getValue(): string
     {
-        return this.value;
+        return this.options.value ?? '';
     }
 
     /* METHODS END */

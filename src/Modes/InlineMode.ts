@@ -22,7 +22,7 @@ export default class InlineMode extends BaseMode{
     }
     hide(){
         this.event_hide();
-        this.context.element.innerHTML = this.context.value;
+        this.context.element.innerHTML = this.context.getValue();
         setTimeout(() => {
             this.init();
             this.event_hidden();

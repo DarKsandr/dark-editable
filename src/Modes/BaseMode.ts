@@ -14,7 +14,7 @@ export default class BaseMode{
         if(!this.context.typeElement.element){
             throw new Error("Element is missing!");
         }
-        this.context.typeElement.element.value = this.context.value;
+        this.context.typeElement.element.value = this.context.getValue();
         this.context.element.dispatchEvent(new CustomEvent("show"));
     }
     event_shown(){

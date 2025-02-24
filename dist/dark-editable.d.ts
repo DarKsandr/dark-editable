@@ -12,7 +12,6 @@ export default class DarkEditable {
     options: Options;
     typeElement: BaseType;
     modeElement: BaseMode;
-    value: string;
     constructor(element: HTMLElement, options?: Options);
     get_opt(name: string, default_value: any): void;
     get_opt_bool(name: string, default_value: any): void;
