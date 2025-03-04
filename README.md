@@ -125,26 +125,26 @@ Options can be defined via javascript or via data-* html attributes.
 | value        | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
 | mode         | string          | 'popup'        | Mode of editable, can be popup or inline.                                                                                                                |
 # Methods
-| Method            | Parameters                        | Description                                                   |
-| ----------------- | --------------------------------- | ------------------------------------------------------------- |
-| disable()         | none                              | Disables editable                                             |
-| enable()          | none                              | Enables editable                                              |
-| getValue()        | none                              | Returns current values of editable elements                   |
-| setValue(value)   | - **value** *Mixed* new value     | Sets new value of editable                                    |
+| Method          | Parameters                    | Description                                 |
+|-----------------|-------------------------------|---------------------------------------------|
+| disable()       | none                          | Disables editable                           |
+| enable()        | none                          | Enables editable                            |
+| getValue()      | none                          | Returns current values of editable elements |
+| setValue(value) | - **value** *Mixed* new value | Sets new value of editable                  |
 # Events
 ```
 document.getElementById("username").addEventListener("save", function(e){
     alert('Saved value');
 })
 ```
-| Event        | Callback parameters               | Description                                                                                                    |
-| ------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| show         | - **event** *Object* event object | Fired when container is show and form is rendered.                                                             |
-| shown        | - **event** *Object* event object | Fired when container is shown and form is rendered.                                                            |
-| hide         | - **event** *Object* event object | Fired when container was hide. It occurs on both save or cancel.                                               |
-| hidden       | - **event** *Object* event object | Fired when container was hidden. It occurs on both save or cancel.                                             |
-| init         | - **event** *Object* event object | Fired when element was initialized. Please note that you should setup init handler before applying editable.   |
-| save         | - **event** *Object* event object | Fired when new value was submitted.                                                                            |
+| Event  | Callback parameters               | Description                                                                                                  |
+|--------|-----------------------------------|--------------------------------------------------------------------------------------------------------------|
+| show   | - **event** *Object* event object | Fired when container is show and form is rendered.                                                           |
+| shown  | - **event** *Object* event object | Fired when container is shown and form is rendered.                                                          |
+| hide   | - **event** *Object* event object | Fired when container was hide. It occurs on both save or cancel.                                             |
+| hidden | - **event** *Object* event object | Fired when container was hidden. It occurs on both save or cancel.                                           |
+| init   | - **event** *Object* event object | Fired when element was initialized. Please note that you should setup init handler before applying editable. |
+| save   | - **event** *Object* event object | Fired when new value was submitted.                                                                          |
 # Inputs
 There are several input types supported by library. Each type may have additional configuration options.\
 Currently supported:
@@ -156,31 +156,37 @@ Currently supported:
 - html5types
 ## text
 Text input
+
 | Name        | Type   | Default | Description                                                |
-| ----------- | ------ | ------- | ---------------------------------------------------------- |
+|-------------|--------|---------|------------------------------------------------------------|
 | placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
+
 ## textarea
 Textarea input
+
 | Name        | Type   | Default | Description                                                |
-| ----------- | ------ | ------- | ---------------------------------------------------------- |
+|-------------|--------|---------|------------------------------------------------------------|
 | placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
 ## select
 Select (dropdown)
+
 | Name   | Type  | Default | Description                                                                                                          |
-| ------ | ----- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+|--------|-------|---------|----------------------------------------------------------------------------------------------------------------------|
 | source | array | []      | Source data for list. If array - it should be in format: [{value: 1, text: "text1"}, {value: 2, text: "text2"}, ...] |
 ## date
 Textarea input
+
 | Name       | Type   | Default    | Description                                                                                                         |
-| ---------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+|------------|--------|------------|---------------------------------------------------------------------------------------------------------------------|
 | format     | string | YYYY-MM-DD | Format used for sending value to server. Also applied when converting date from data-value attribute. Use moment.js |
 | viewformat | string | YYYY-MM-DD | Format used for displaying date. Also applied when converting date from element's text on init. Use moment.js       |
 ## datetime
 Textarea input
-| Name       | Type   | Default    | Description                                                                                                         |
-| ---------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------- |
-| format     | string | YYYY-MM-DD | Format used for sending value to server. Also applied when converting date from data-value attribute. Use moment.js |
-| viewformat | string | YYYY-MM-DD | Format used for displaying date. Also applied when converting date from element's text on init. Use moment.js       |
+
+| Name       | Type   | Default          | Description                                                                                                         |
+|------------|--------|------------------|---------------------------------------------------------------------------------------------------------------------|
+| format     | string | YYYY-MM-DD HH:mm | Format used for sending value to server. Also applied when converting date from data-value attribute. Use moment.js |
+| viewformat | string | YYYY-MM-DD HH:mm | Format used for displaying date. Also applied when converting date from element's text on init. Use moment.js       |
 ## html5types
 HTML5 input types. Following types are supported:
 - password

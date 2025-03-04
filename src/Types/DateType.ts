@@ -22,7 +22,8 @@ export default class DateType extends BaseType{
 
     initOptions(): void
     {
-        this.context.get_opt("format", "YYYY-MM-DD");
-        this.context.get_opt("viewformat", "YYYY-MM-DD");
+        const format = this.context.get_opt("format", "YYYY-MM-DD");
+        const viewformat = this.context.get_opt("viewformat", "YYYY-MM-DD");
+        this.context.setValue(moment(this.context.getValue(), viewformat).format(format));
     }
 }

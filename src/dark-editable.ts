@@ -40,10 +40,10 @@ export default class DarkEditable{
 
     /* INIT METHODS */
 
-    get_opt(name: string, default_value: any): void
+    get_opt(name: string, default_value: any): any
     {
         // @ts-ignore
-        this.options[name] = this.element.dataset?.[ name ] ?? this.options?.[ name ] ?? default_value;
+        return this.options[name] = this.element.dataset?.[ name ] ?? this.options?.[ name ] ?? default_value;
     }
 
     get_opt_bool(name: string, default_value: any): void
