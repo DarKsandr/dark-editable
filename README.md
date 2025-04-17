@@ -199,4 +199,19 @@ HTML5 input types. Following types are supported:
 
 | Name        | Type   | Default | Description                                                |
 | ----------- | ------ | ------- | ---------------------------------------------------------- |
-| placeholder | string | null    | Placeholder attribute of input. Shown when input is empty. |
+| attributes  | object |  {}     | A map of HTML5 input attributes to apply on the input.     |
+
+### Example
+
+```js
+const popover = new DarkEditable(el, {
+    type: 'number',
+    attributes: {
+        placeholder: 'Enter age',
+        min: 0,
+        max: 120,
+        step: 1,
+        required: true
+    }
+});
+```
