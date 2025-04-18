@@ -20,4 +20,7 @@ export default interface Options {
         value: string;
         text: string;
     }] | string;
+    attributes?: {
+        [key: string]: string | number | boolean | undefined;
+    };
 }
