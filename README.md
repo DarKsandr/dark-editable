@@ -1,8 +1,7 @@
 # Getting started
 It is an alternative to [x-editable](https://github.com/vitalets/x-editable). Written in pure JavaScript.
 
-Heres a quick demo on [jfiddle](https://jsfiddle.net/YohnJohn/c3t1avrp/40/) to give you some examole of how it works.
-
+Here's a quick demo on [jfiddle](https://jsfiddle.net/DarKsandr/8zfd32jp/38/) to give you some example of how it works.
 
 ## Quick start
 You can install via npm 
