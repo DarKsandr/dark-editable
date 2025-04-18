@@ -15,6 +15,7 @@ export default interface Options {
     showbuttons?: boolean;
     success?: (response: Response, newValue: string | number) => Promise<any>;
     error?: (response: Response, newValue: string | number) => Promise<any>;
+    format?: string;
     viewformat?: string;
     source?: [{
         value: string;

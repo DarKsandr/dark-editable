@@ -1,6 +1,6 @@
 import './dark-editable.css';var m = Object.defineProperty;
-var x = (o, t, e) => t in o ? m(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
-var r = (o, t, e) => x(o, typeof t != "symbol" ? t + "" : t, e);
+var x = (i, t, e) => t in i ? m(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
+var r = (i, t, e) => x(i, typeof t != "symbol" ? t + "" : t, e);
 import { Popover as f } from "bootstrap";
 import l from "moment";
 class h {
@@ -130,10 +130,10 @@ class a {
         this.showLoad();
         let n;
         try {
-          const i = await this.ajax(s);
-          i.ok ? n = await this.context.success(i, s) : n = await this.context.error(i, s) || `${i.status} ${i.statusText}`;
-        } catch (i) {
-          console.error(i), n = i;
+          const o = await this.ajax(s);
+          o.ok ? n = await this.context.success(o, s) : n = await this.context.error(o, s) || `${o.status} ${o.statusText}`;
+        } catch (o) {
+          console.error(o), n = o;
         }
         n ? (this.setError(n), this.showError()) : (this.setError(""), this.hideError(), this.context.setValue(this.getValue()), this.context.modeElement.hide(), this.initText()), this.hideLoad();
       } else
@@ -170,7 +170,7 @@ class a {
     this.load && (this.load.style.display = "block");
   }
   ajax(t) {
-    var i;
+    var o;
     let e = this.context.options.url;
     if (!e)
       throw new Error("URL is required!");
@@ -179,7 +179,7 @@ class a {
     if (!this.context.options.name)
       throw new Error("Name is required!");
     const s = new FormData();
-    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((i = this.context.options.ajaxOptions) == null ? void 0 : i.method) === "GET") {
+    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((o = this.context.options.ajaxOptions) == null ? void 0 : o.method) === "GET") {
       const c = [];
       s.forEach((d, u) => {
         c.push(`${u}=${d}`);
@@ -241,8 +241,8 @@ class v extends a {
       "name",
       "value"
     ];
-    for (const [i, c] of Object.entries(s))
-      n.includes(i) && c !== void 0 && t.setAttribute(i, String(c));
+    for (const [o, c] of Object.entries(s))
+      n.includes(o) && c !== void 0 && t.setAttribute(o, String(c));
     return this.createContainer(t);
   }
 }
@@ -279,11 +279,12 @@ class p extends a {
     return t.type = "date", this.createContainer(t);
   }
   initText() {
-    return this.context.getValue() === "" ? (this.context.element.innerHTML = this.context.options.emptytext || "", !0) : (this.context.element.innerHTML = l(this.context.getValue()).format(this.context.options.viewformat), !1);
+    const t = this.context.getValue();
+    return t === "" ? (this.context.element.innerHTML = this.context.options.emptytext || "", !0) : (this.context.element.innerHTML = l(t, this.context.options.format).format(this.context.options.viewformat), !1);
   }
   initOptions() {
-    const t = this.context.get_opt("format", "YYYY-MM-DD"), e = this.context.get_opt("viewformat", "YYYY-MM-DD");
-    this.context.setValue(l(this.context.getValue(), e).format(t));
+    const t = "YYYY-MM-DD", e = this.context.get_opt("format", t), s = this.context.get_opt("viewformat", t);
+    this.context.setValue(l(this.context.getValue(), s).format(e));
   }
 }
 class g extends p {

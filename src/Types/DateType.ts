@@ -11,19 +11,21 @@ export default class DateType extends BaseType{
 
     initText(): boolean
     {
-        if(this.context.getValue() === ""){
+        const value = this.context.getValue();
+        if(value === ""){
             this.context.element.innerHTML = this.context.options.emptytext || "";
             return true;
         } else {
-            this.context.element.innerHTML = moment(this.context.getValue()).format(this.context.options.viewformat);
+            this.context.element.innerHTML = moment(value, this.context.options.format).format(this.context.options.viewformat);
             return false;
         }
     }
 
     initOptions(): void
     {
-        const format = this.context.get_opt("format", "YYYY-MM-DD");
-        const viewformat = this.context.get_opt("viewformat", "YYYY-MM-DD");
+        const default_format = "YYYY-MM-DD";
+        const format = this.context.get_opt("format", default_format);
+        const viewformat = this.context.get_opt("viewformat", default_format);
         this.context.setValue(moment(this.context.getValue(), viewformat).format(format));
     }
 }
