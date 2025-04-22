@@ -95,6 +95,7 @@ export default class DarkEditable{
             this.error = this.options.error;
         }
         this.get_opt("attributes", {});
+        this.get_opt("popoverOptions", {});
     }
 
     init_text(){

@@ -6,13 +6,17 @@ export default class PopupMode extends BaseMode{
     popover: Popover|null = null;
 
     init(){
-        this.popover = new Popover(this.context.element, {
+        const options = {
             container: "body",
             content: this.context.typeElement.create(),
             html: true,
             customClass: "dark-editable",
             title: this.context.options.title,
-        });
+        };
+        this.popover = new Popover(this.context.element, Object.assign(
+            options, 
+            this.context.options.popoverOptions
+        ));
         this.context.element.addEventListener('show.bs.popover', () => {
             this.event_show();
         });
