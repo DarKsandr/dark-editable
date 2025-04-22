@@ -110,7 +110,7 @@ Options can be defined via javascript or via data-* html attributes.
 
 | Name         | Type            | Default        | Description                                                                                                                                              |
 |--------------|-----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ajaxOptions  | object          | null           | Text shown when element is empty                                                                                                                         |
+| ajaxOptions  | object          | {}           | empty                                                                                                                         |
 | disabled     | boolean         | false          | Sets disabled state of editable                                                                                                                          |
 | emptytext    | string          | 'Empty'        | Text shown when element is empty.                                                                                                                        |
 | error        | function        | null           |                                                                                                                                                          |
@@ -123,6 +123,7 @@ Options can be defined via javascript or via data-* html attributes.
 | url          | string          | null           | Url for submit, e.g. ```'/post'```                                                                                                                       |
 | value        | mixed           | element's text | Initial value of input. If not set, taken from element's text.                                                                                           |
 | mode         | string          | 'popup'        | Mode of editable, can be popup or inline.                                                                                                                |
+| popoverOptions         | object          | {}        | Bootstrap Popover Options                                                                                                                |
 # Methods
 | Method          | Parameters                    | Description                                 |
 |-----------------|-------------------------------|---------------------------------------------|
