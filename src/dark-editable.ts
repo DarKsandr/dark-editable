@@ -70,15 +70,22 @@ export default class DarkEditable{
 
     init_options(): void
     {
+        // for backward compatibility
+        const title = this.get_opt("title", "");
+
         //priority date elements
         this.get_opt("value", this.element.innerHTML);
         this.get_opt("name", this.element.id);
         this.get_opt("pk", null);
-        this.get_opt("title", "");
         this.get_opt("type", "text");
         this.get_opt("emptytext", "Empty");
         this.get_opt("mode", "popup");
         this.get_opt("url", null);
+        this.get_opt("popupOptions", {});
+        this.options.popupOptions = Object.assign({
+            customClass: "dark-editable",
+            title: title,
+        }, this.options.popupOptions);
         this.get_opt("ajaxOptions", {});
         this.options.ajaxOptions = Object.assign({
             method: "POST",

@@ -10,6 +10,7 @@ export default interface Options {
     disabled?: boolean;
     send?: boolean;
     mode?: 'popup'|'inline';
+    popupOptions?: Record<string, any>;
     emptytext?: string;
     url?: string|null;
     required?: boolean;
