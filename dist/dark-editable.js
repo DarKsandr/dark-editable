@@ -43,13 +43,17 @@ class E extends h {
     r(this, "popover", null);
   }
   init() {
-    this.popover = new f(this.context.element, {
+    const e = {
       container: "body",
       content: this.context.typeElement.create(),
       html: !0,
       customClass: "dark-editable",
       title: this.context.options.title
-    }), this.context.element.addEventListener("show.bs.popover", () => {
+    };
+    this.popover = new f(this.context.element, Object.assign(
+      e,
+      this.context.options.popoverOptions
+    )), this.context.element.addEventListener("show.bs.popover", () => {
       this.event_show();
     }), this.context.element.addEventListener("shown.bs.popover", () => {
       this.event_shown();
@@ -57,13 +61,13 @@ class E extends h {
       this.event_hide();
     }), this.context.element.addEventListener("hidden.bs.popover", () => {
       this.event_hidden();
-    }), document.addEventListener("click", (e) => {
-      const s = e.target;
-      if (this.popover && s === this.popover.tip || s === this.context.element) return;
-      let n = s.parentNode;
-      for (; n; ) {
-        if (n === this.popover.tip) return;
-        n = n.parentNode;
+    }), document.addEventListener("click", (s) => {
+      const n = s.target;
+      if (this.popover && n === this.popover.tip || n === this.context.element) return;
+      let o = n.parentNode;
+      for (; o; ) {
+        if (o === this.popover.tip) return;
+        o = o.parentNode;
       }
       this.hide();
     });
@@ -78,7 +82,7 @@ class E extends h {
     this.popover && this.popover.hide();
   }
 }
-class w extends h {
+class v extends h {
   init() {
     const t = () => {
       if (!this.context.options.disabled) {
@@ -221,7 +225,7 @@ class a {
     return this.element ? this.element.value : "";
   }
 }
-class v extends a {
+class w extends a {
   create() {
     const t = this.createElement("input"), { options: e = {} } = this.context;
     t.type = typeof e.type == "string" ? e.type : "text";
@@ -332,7 +336,7 @@ class M {
     this.get_opt("value", this.element.innerHTML), this.get_opt("name", this.element.id), this.get_opt("pk", null), this.get_opt("title", ""), this.get_opt("type", "text"), this.get_opt("emptytext", "Empty"), this.get_opt("mode", "popup"), this.get_opt("url", null), this.get_opt("ajaxOptions", {}), this.options.ajaxOptions = Object.assign({
       method: "POST",
       dataType: "text"
-    }, this.options.ajaxOptions), this.get_opt_bool("send", !0), this.get_opt_bool("disabled", !1), this.get_opt_bool("required", !1), this.get_opt_bool("showbuttons", !0), (t = this.options) != null && t.success && typeof ((e = this.options) == null ? void 0 : e.success) == "function" && (this.success = this.options.success), (s = this.options) != null && s.error && typeof ((n = this.options) == null ? void 0 : n.error) == "function" && (this.error = this.options.error), this.get_opt("attributes", {});
+    }, this.options.ajaxOptions), this.get_opt_bool("send", !0), this.get_opt_bool("disabled", !1), this.get_opt_bool("required", !1), this.get_opt_bool("showbuttons", !0), (t = this.options) != null && t.success && typeof ((e = this.options) == null ? void 0 : e.success) == "function" && (this.success = this.options.success), (s = this.options) != null && s.error && typeof ((n = this.options) == null ? void 0 : n.error) == "function" && (this.error = this.options.error), this.get_opt("attributes", {}), this.get_opt("popoverOptions", {});
   }
   init_text() {
     const t = "dark-editable-element-empty";
@@ -349,7 +353,7 @@ class M {
       case "popup":
         return new E(this);
       case "inline":
-        return new w(this);
+        return new v(this);
     }
   }
   route_type() {
@@ -364,7 +368,7 @@ class M {
       case "number":
       case "range":
       case "time":
-        return new v(this);
+        return new w(this);
       case "textarea":
         return new y(this);
       case "select":
