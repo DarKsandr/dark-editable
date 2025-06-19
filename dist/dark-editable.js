@@ -1,6 +1,6 @@
 import './dark-editable.css';var m = Object.defineProperty;
-var x = (i, t, e) => t in i ? m(i, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[t] = e;
-var r = (i, t, e) => x(i, typeof t != "symbol" ? t + "" : t, e);
+var x = (o, t, e) => t in o ? m(o, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : o[t] = e;
+var r = (o, t, e) => x(o, typeof t != "symbol" ? t + "" : t, e);
 import { Popover as f } from "bootstrap";
 import l from "moment";
 class h {
@@ -13,16 +13,16 @@ class h {
   event_show() {
     if (this.context.typeElement.hideError(), !this.context.typeElement.element)
       throw new Error("Element is missing!");
-    this.context.typeElement.element.value = this.context.getValue(), this.context.element.dispatchEvent(new CustomEvent("show"));
+    this.context.typeElement.element.value = this.context.getValue(), this.context.element.dispatchEvent(new CustomEvent("show", { detail: { DarkEditable: this.context } }));
   }
   event_shown() {
-    this.context.element.dispatchEvent(new CustomEvent("shown"));
+    this.context.element.dispatchEvent(new CustomEvent("shown", { detail: { DarkEditable: this.context } }));
   }
   event_hide() {
-    this.context.element.dispatchEvent(new CustomEvent("hide"));
+    this.context.element.dispatchEvent(new CustomEvent("hide", { detail: { DarkEditable: this.context } }));
   }
   event_hidden() {
-    this.context.element.dispatchEvent(new CustomEvent("hidden"));
+    this.context.element.dispatchEvent(new CustomEvent("hidden", { detail: { DarkEditable: this.context } }));
   }
   init() {
     throw new Error("Method `init` not define!");
@@ -64,10 +64,10 @@ class E extends h {
     }), document.addEventListener("click", (s) => {
       const n = s.target;
       if (this.popover && n === this.popover.tip || n === this.context.element) return;
-      let o = n.parentNode;
-      for (; o; ) {
-        if (o === this.popover.tip) return;
-        o = o.parentNode;
+      let i = n.parentNode;
+      for (; i; ) {
+        if (i === this.popover.tip) return;
+        i = i.parentNode;
       }
       this.hide();
     });
@@ -82,7 +82,7 @@ class E extends h {
     this.popover && this.popover.hide();
   }
 }
-class v extends h {
+class b extends h {
   init() {
     const t = () => {
       if (!this.context.options.disabled) {
@@ -134,15 +134,15 @@ class a {
         this.showLoad();
         let n;
         try {
-          const o = await this.ajax(s);
-          o.ok ? n = await this.context.success(o, s) : n = await this.context.error(o, s) || `${o.status} ${o.statusText}`;
-        } catch (o) {
-          console.error(o), n = o;
+          const i = await this.ajax(s);
+          i.ok ? n = await this.context.success(i, s) : n = await this.context.error(i, s) || `${i.status} ${i.statusText}`;
+        } catch (i) {
+          console.error(i), n = i;
         }
         n ? (this.setError(n), this.showError()) : (this.setError(""), this.hideError(), this.context.setValue(this.getValue()), this.context.modeElement.hide(), this.initText()), this.hideLoad();
       } else
         this.context.setValue(this.getValue()), this.context.modeElement.hide(), this.initText();
-      this.context.element.dispatchEvent(new CustomEvent("save"));
+      this.context.element.dispatchEvent(new CustomEvent("save", { detail: { DarkEditable: this.context } }));
     }), t;
   }
   createContainerLoad() {
@@ -174,7 +174,7 @@ class a {
     this.load && (this.load.style.display = "block");
   }
   ajax(t) {
-    var o;
+    var i;
     let e = this.context.options.url;
     if (!e)
       throw new Error("URL is required!");
@@ -183,7 +183,7 @@ class a {
     if (!this.context.options.name)
       throw new Error("Name is required!");
     const s = new FormData();
-    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((o = this.context.options.ajaxOptions) == null ? void 0 : o.method) === "GET") {
+    if (s.append("pk", this.context.options.pk), s.append("name", this.context.options.name), s.append("value", t), ((i = this.context.options.ajaxOptions) == null ? void 0 : i.method) === "GET") {
       const c = [];
       s.forEach((d, u) => {
         c.push(`${u}=${d}`);
@@ -225,7 +225,7 @@ class a {
     return this.element ? this.element.value : "";
   }
 }
-class w extends a {
+class v extends a {
   create() {
     const t = this.createElement("input"), { options: e = {} } = this.context;
     t.type = typeof e.type == "string" ? e.type : "text";
@@ -245,18 +245,18 @@ class w extends a {
       "name",
       "value"
     ];
-    for (const [o, c] of Object.entries(s))
-      n.includes(o) && c !== void 0 && t.setAttribute(o, String(c));
+    for (const [i, c] of Object.entries(s))
+      n.includes(i) && c !== void 0 && t.setAttribute(i, String(c));
     return this.createContainer(t);
   }
 }
-class y extends a {
+class w extends a {
   create() {
     const t = this.createElement("textarea");
     return this.createContainer(t);
   }
 }
-class b extends a {
+class y extends a {
   create() {
     const t = this.createElement("select");
     return this.context.options.source && Array.isArray(this.context.options.source) && this.context.options.source.forEach((e) => {
@@ -305,13 +305,13 @@ class g extends p {
  * DarkEditable.js
  * License: MIT
  */
-class M {
+class k {
   constructor(t, e = {}) {
     r(this, "element");
     r(this, "options");
     r(this, "typeElement");
     r(this, "modeElement");
-    this.element = t, this.options = { ...e }, this.init_options(), this.typeElement = this.route_type(), this.typeElement.initOptions(), this.modeElement = this.route_mode(), this.modeElement.init(), this.init_text(), this.init_style(), this.options.disabled && this.disable(), this.element.dispatchEvent(new CustomEvent("init"));
+    this.element = t, this.options = { ...e }, this.init_options(), this.typeElement = this.route_type(), this.typeElement.initOptions(), this.modeElement = this.route_mode(), this.modeElement.init(), this.init_text(), this.init_style(), this.options.disabled && this.disable(), this.element.dispatchEvent(new CustomEvent("init", { detail: { DarkEditable: this } }));
   }
   /* INIT METHODS */
   get_opt(t, e) {
@@ -353,7 +353,7 @@ class M {
       case "popup":
         return new E(this);
       case "inline":
-        return new v(this);
+        return new b(this);
     }
   }
   route_type() {
@@ -368,11 +368,11 @@ class M {
       case "number":
       case "range":
       case "time":
-        return new w(this);
+        return new v(this);
       case "textarea":
-        return new y(this);
+        return new w(this);
       case "select":
-        return new b(this);
+        return new y(this);
       case "date":
         return new p(this);
       case "datetime":
@@ -401,9 +401,12 @@ class M {
   getValue() {
     return this.options.value ?? "";
   }
+  getOption(t) {
+    return this.options[t] ?? null;
+  }
   /* METHODS END */
 }
 export {
-  M as default
+  k as default
 };
 //# sourceMappingURL=dark-editable.js.map

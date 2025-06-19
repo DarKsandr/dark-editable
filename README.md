@@ -125,12 +125,13 @@ Options can be defined via javascript or via data-* html attributes.
 | mode         | string          | 'popup'        | Mode of editable, can be popup or inline.                                                                                                                |
 | popoverOptions         | object          | {}        | Bootstrap Popover Options                                                                                                                |
 # Methods
-| Method          | Parameters                    | Description                                 |
-|-----------------|-------------------------------|---------------------------------------------|
-| disable()       | none                          | Disables editable                           |
-| enable()        | none                          | Enables editable                            |
-| getValue()      | none                          | Returns current values of editable elements |
-| setValue(value) | - **value** *Mixed* new value | Sets new value of editable                  |
+| Method           | Parameters                      | Description                                 |
+|------------------|---------------------------------|---------------------------------------------|
+| disable()        | none                            | Disables editable                           |
+| enable()         | none                            | Enables editable                            |
+| getValue()       | none                            | Returns current values of editable elements |
+| setValue(value)  | - **value** *Mixed* new value   | Sets new value of editable                  |
+| getOption(value) | - **value** *Mixed* name option | Returns option value of editable elements   |
 # Events
 ```
 document.getElementById("username").addEventListener("save", function(e){

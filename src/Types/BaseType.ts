@@ -88,7 +88,7 @@ export default class BaseType{
                 this.context.modeElement.hide();
                 this.initText();
             }
-            this.context.element.dispatchEvent(new CustomEvent("save"));
+            this.context.element.dispatchEvent(new CustomEvent("save", {detail: {DarkEditable: this.context}}));
         })
         return form;
     }

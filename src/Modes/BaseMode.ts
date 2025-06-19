@@ -15,16 +15,16 @@ export default class BaseMode{
             throw new Error("Element is missing!");
         }
         this.context.typeElement.element.value = this.context.getValue();
-        this.context.element.dispatchEvent(new CustomEvent("show"));
+        this.context.element.dispatchEvent(new CustomEvent("show", {detail: {DarkEditable: this.context}}));
     }
     event_shown(){
-        this.context.element.dispatchEvent(new CustomEvent("shown"));
+        this.context.element.dispatchEvent(new CustomEvent("shown", {detail: {DarkEditable: this.context}}));
     }
     event_hide(){
-        this.context.element.dispatchEvent(new CustomEvent("hide"));
+        this.context.element.dispatchEvent(new CustomEvent("hide", {detail: {DarkEditable: this.context}}));
     }
     event_hidden(){
-        this.context.element.dispatchEvent(new CustomEvent("hidden"));
+        this.context.element.dispatchEvent(new CustomEvent("hidden", {detail: {DarkEditable: this.context}}));
     }
     init(){
         throw new Error('Method `init` not define!');
