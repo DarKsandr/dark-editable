@@ -393,7 +393,7 @@ class k {
     this.options.disabled = !1, this.element.classList.remove("dark-editable-element-disabled"), this.modeElement.enable();
   }
   disable() {
-    this.options.disabled = !0, this.element.classList.add("dark-editable-element-disabled"), this.modeElement.enable();
+    this.options.disabled = !0, this.element.classList.add("dark-editable-element-disabled"), this.modeElement.disable();
   }
   setValue(t) {
     this.options.value = t, this.init_text();

@@ -177,7 +177,7 @@ export default class DarkEditable{
     {
         this.options.disabled = true;
         this.element.classList.add("dark-editable-element-disabled");
-        this.modeElement.enable();
+        this.modeElement.disable();
     }
 
     setValue(value: string): void

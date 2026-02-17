@@ -30,7 +30,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "version": "2.1.6",
+  "version": "2.1.7",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DarKsandr/dark-editable.git"
